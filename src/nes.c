@@ -139,9 +139,10 @@ void nes_cleanup(nes_t *nes)
 {
 	free(nes->rom_data);
 
-	memory_cleanup(&nes->memory);
-	vmemory_cleanup(&nes->vmemory);
 	cpu_cleanup(&nes->cpu);
+	ppu_cleanup(&nes->ppu);
+	vmemory_cleanup(&nes->vmemory);
+	memory_cleanup(&nes->memory);
 }
 
 

@@ -64,4 +64,5 @@ typedef struct {
 void ppu_init(nes_ppu_t *, nes_vmemory_t *);
 void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *);
 void ppu_update_registers(nes_ppu_t *, bool *, uint32_t *);
+void ppu_cleanup(nes_ppu_t *);
 #endif

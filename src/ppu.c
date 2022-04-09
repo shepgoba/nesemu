@@ -161,3 +161,8 @@ void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 		}
 	}
 }
+
+void ppu_cleanup(nes_ppu_t *ppu)
+{
+	
+}
