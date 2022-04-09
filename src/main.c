@@ -15,12 +15,12 @@
 int main(int argc, char **argv)
 {
 	if (argc < 2) {
-		EXIT_WITH(2, "Usage: nesemu <rom path>");
+		exit_with_error(2, "Usage: nesemu <rom path>");
 	}
 
 	SDL_SetMainReady();
 	if (SDL_Init(SDL_INIT_VIDEO)) {
-		EXIT_WITH(1, "Couldn't initialize SDL");
+		exit_with_error(1, "Couldn't initialize SDL");
 	}
 
 	SDL_Window *window = SDL_CreateWindow(
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 		0
 	);
 	if (!window) {
-		EXIT_WITH(5, "Could not create window!");
+		exit_with_error(5, "Could not create window!");
 	}
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		SDL_RENDERER_ACCELERATED
 	);
 	if (!renderer) {
-		EXIT_WITH(6, "Could not create renderer!");
+		exit_with_error(6, "Could not create renderer!");
 	}
 
 	SDL_Texture *video_texture = SDL_CreateTexture(
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 		INTERNAL_VIDEO_HEIGHT
 	);
 	if (!video_texture) {
-		EXIT_WITH(7, "Could not create video texture!");
+		exit_with_error(7, "Could not create video texture!");
 	}
 
 
@@ -63,11 +63,11 @@ int main(int argc, char **argv)
 
 	nes_t nes;
 	if (!nes_init(&nes, &render_ctx)) {
-		EXIT_WITH(3, "Could not create main NES data!");
+		exit_with_error(3, "Could not create main NES data!");
 	}
 
 	if (!nes_load_rom(&nes, argv[1])) {
-		EXIT_WITH(4, "Could not load NES rom!");
+		exit_with_error(4, "Could not load NES rom!");
 	}
 
 	int pitch;

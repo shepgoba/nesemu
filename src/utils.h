@@ -37,6 +37,6 @@ bool get_rom_info(FILE *, ines_rom_header_t *, nes_rom_info_t *);
 void dump_memory(nes_memory_t *, const char *);
 void dump_vmemory(nes_vmemory_t *, const char *);
 void handle_keypress(SDL_Event *, uint8_t *);
-void EXIT_WITH(int, const char *, ...);
+void exit_with_error(int, const char *, ...);
 
 #endif

@@ -1,6 +1,6 @@
 #include "utils.h"
 
-void EXIT_WITH(int code, const char *message, ...)
+void exit_with_error(int code, const char *message, ...)
 {
 	va_list args;
     va_start(args, message);
