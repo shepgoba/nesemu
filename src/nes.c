@@ -25,7 +25,6 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 	nes->key_state = 0;
 	nes->master_clock_cycles = 0;
 
-	nes->rom_handle = NULL;
 	nes->rom_data = NULL;
 	nes->video_data = NULL;
 
@@ -34,12 +33,12 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 
 bool nes_load_rom(nes_t *nes, const char *path) 
 {
-	nes->rom_handle = fopen(path, "rb");
-	if (!nes->rom_handle) {
+	FILE *rom_handle = fopen(path, "rb");
+	if (!rom_handle) {
 		return false;
 	}
 
-	if (!get_rom_info(nes->rom_handle, &nes->rom_header, &nes->rom_info)) {
+	if (!get_rom_info(rom_handle, &nes->rom_header, &nes->rom_info)) {
 		return false;
 	}
 
@@ -49,7 +48,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	}
 
 	bool copy_prg_rom_result = 
-		read_bytes(nes->memory.data + 0xc000, nes->rom_info.rom_size, 0x10, nes->rom_handle);
+		read_bytes(nes->memory.data + 0xc000, nes->rom_info.rom_size, 0x10, rom_handle);
 		
 	if (!copy_prg_rom_result) {
 		printf("couldn't copy PRG ROM!\n");
@@ -60,7 +59,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		nes->vmemory.data, 
 		nes->rom_info.chr_size, 
 		0x10 + nes->rom_info.rom_size, 
-		nes->rom_handle
+		rom_handle
 	);
 
 	if (!copy_chr_rom_result) {
@@ -74,9 +73,11 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		return false;
 	}
 	
-	read_bytes(nes->rom_data, nes->rom_info.rom_size, 0x10, nes->rom_handle);	
+	read_bytes(nes->rom_data, nes->rom_info.rom_size, 0x10, rom_handle);	
 	
 	cpu_reset(&nes->cpu);
+
+	fclose(rom_handle);
 
 	return true;
 }
@@ -137,7 +138,6 @@ void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 void nes_cleanup(nes_t *nes)
 {
 	free(nes->rom_data);
-	fclose(nes->rom_handle);
 
 	memory_cleanup(&nes->memory);
 	vmemory_cleanup(&nes->vmemory);

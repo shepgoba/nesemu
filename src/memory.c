@@ -36,9 +36,6 @@ void vmemory_cleanup(nes_vmemory_t *vmemory)
 {
 	free(vmemory->data);
 }
-// :fr:
-// https://cdn.discordapp.com/emojis/844727924515143731.png?v=1
-
 
 
 void trol_set_bit(uint8_t *byte, int bit, int status)
@@ -46,6 +43,7 @@ void trol_set_bit(uint8_t *byte, int bit, int status)
 	*byte ^= (-status ^ *byte) & (1UL << bit);
 }
 
+__attribute__((noinline))
 void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	uint8_t *mem = cpu->mem->data;
@@ -177,6 +175,7 @@ void mem_write_16(nes_cpu_t *cpu, uint16_t address, uint16_t value)
    	mem_write_8(cpu, address + 1, (value & 0xff00) >> 8);
 }
 
+__attribute__((noinline))
 uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 {
 

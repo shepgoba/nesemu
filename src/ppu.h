@@ -23,9 +23,9 @@
 #define INTERNAL_VIDEO_WIDTH 256
 #define INTERNAL_VIDEO_HEIGHT 240
 
-#define VIDEO_SCALE 4
-
 #define MASTER_CLOCKS_PER_PPU_CLOCK 4
+
+#define VIDEO_SCALE 2
 
 
 typedef struct {

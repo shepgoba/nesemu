@@ -75,8 +75,6 @@ int main(int argc, char **argv)
 
 
 	while (true) {
-		nes.frame_start = SDL_GetTicks();
-
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -96,6 +94,7 @@ int main(int argc, char **argv)
 				}
 			}
 		}
+		nes.frame_start = SDL_GetTicks();
 
 		for (uint32_t master_clock_frame = 0; 
 			master_clock_frame < MASTER_CLOCK_CYCLES_PER_FRAME; 

@@ -446,7 +446,16 @@ void instr_AND_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	//__set_value_abs_y(cpu, addr, num);
 }
-
+/*
+_instr_AND_imm:
+	shr edx, 8
+	and dl, [rcx + 2]
+	mov [rcx + 2], dl
+	setz byte ptr [rcx + 8]
+	shr dl, 7
+	mov [rcx + 0x0e], dl
+	ret
+*/
 void instr_AND_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t num = __get_imm8_from_opcode(instr);
@@ -582,7 +591,7 @@ void instr_ASL_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BCC(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_C);
+	bool flag = get_flag(cpu, FLAG_C);
 
 	if (!flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -591,7 +600,7 @@ void instr_BCC(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BCS(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_C);
+	bool flag = get_flag(cpu, FLAG_C);
 
 	if (flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -600,7 +609,7 @@ void instr_BCS(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BEQ(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_Z);
+	bool flag = get_flag(cpu, FLAG_Z);
 
 	if (flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -612,7 +621,6 @@ void instr_BIT_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
 
 	set_flag(cpu, FLAG_Z, (cpu->a & num) == 0);
 	set_flag(cpu, FLAG_N, __is_negative(num));
@@ -631,7 +639,7 @@ void instr_BIT_zpg(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BMI(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_N);
+	bool flag = get_flag(cpu, FLAG_N);
 
 	if (flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -640,7 +648,7 @@ void instr_BMI(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BNE(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_Z);
+	bool flag = get_flag(cpu, FLAG_Z);
 
 	if (!flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -651,7 +659,7 @@ void instr_BNE(nes_cpu_t *cpu, uint32_t instr)
 //should 01101101 
 void instr_BPL(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_N);
+	bool flag = get_flag(cpu, FLAG_N);
 
 	if (!flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -670,9 +678,10 @@ void instr_BRK(nes_cpu_t *cpu, uint32_t instr)
 	oper_push_8(cpu, copy);
 }
 
+
 void instr_BVC(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_V);
+	bool flag = get_flag(cpu, FLAG_V);
 
 	if (!flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -681,7 +690,7 @@ void instr_BVC(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BVS(nes_cpu_t *cpu, uint32_t instr)
 {
-	int flag = get_flag(cpu, FLAG_V);
+	bool flag = get_flag(cpu, FLAG_V);
 
 	if (flag) {
 		oper_branch_offset(cpu, (int8_t)__get_imm8_from_opcode(instr));
@@ -725,7 +734,7 @@ void instr_CMP_abs_x(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
 	uint8_t result = cpu->a - num;
-	
+
 	set_flag(cpu, FLAG_C, cpu->a >= num);
 	set_flag(cpu, FLAG_Z, result == 0);
 	set_flag(cpu, FLAG_N, __is_negative(result));

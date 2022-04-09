@@ -52,7 +52,7 @@ static const uint32_t ntsc_rgb_table[64] = {
 	0xfeffff, 0x1f9eff, 0x5376ff, 0x9865ff, 0xfc67ff, 0xff6cb3, 0xff7466, 0xff8014, 0xc49a00, 0x71b300, 0x28c421, 0x00c874, 0x00bfd0, 0x2b2b2b, 0x000000, 0x000000, 
 	0xfeffff, 0x9ed5ff, 0xafc0ff, 0xd0b8ff, 0xfebfff, 0xffc0e0, 0xffc3bd, 0xffca9c, 0xe7d58b, 0xc5df8e, 0xa6e6a3, 0x94e8c5, 0x92e4eb, 0xa7a7a7, 0x000000, 0x000000
 };
-//static uint32_t *ntsc_rgb_table = NULL;
+
 
 static inline uint8_t __get_bit_8(uint8_t byte, int bit) 
 {
@@ -71,8 +71,6 @@ static inline uint8_t reverse(uint8_t num)
 				| ((num & 0x80) >> 7);
 	return pog;
 }
-
-
 
 void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 {
@@ -118,7 +116,7 @@ void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 
 	if (ppu->should_render_sprites) {
 		uint8_t *sprite_tiledata = ppu->vmem->data + ppu->sprite_tiledata_base;
-
+ 
 		for (int oam_idx = 0; oam_idx < 0x40; oam_idx += 4) {
 			uint8_t sprite_y = ppu->oam[oam_idx];
 

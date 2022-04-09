@@ -47,8 +47,6 @@ struct nes {
 
 	uint32_t frametime;
 	uint32_t frame_start;
-
-	FILE *rom_handle;
 };
 
 typedef struct nes nes_t;
