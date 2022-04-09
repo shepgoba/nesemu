@@ -16,23 +16,13 @@
 
 #define MASTER_CLOCKS_PER_CPU_CLOCK 12
 
-#ifdef CPU_USE_OLD_FLAGS
-	#define FLAG_N 0x80
-	#define FLAG_V 0x40
-	#define FLAG_B 0x10
-	#define FLAG_D 0x8
-	#define FLAG_I 0x4
-	#define FLAG_Z 0x2
-	#define FLAG_C 0x1
-#else
-	#define FLAG_N 7
-	#define FLAG_V 6
-	#define FLAG_B 4
-	#define FLAG_D 3
-	#define FLAG_I 2
-	#define FLAG_Z 1
-	#define FLAG_C 0
-#endif
+#define FLAG_N 7
+#define FLAG_V 6
+#define FLAG_B 4
+#define FLAG_D 3
+#define FLAG_I 2
+#define FLAG_Z 1
+#define FLAG_C 0
 
 
 

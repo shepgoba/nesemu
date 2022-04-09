@@ -28,46 +28,15 @@ static inline void oper_branch_offset(nes_cpu_t *cpu, int8_t offset)
 	cpu->wait_cycles++;
 }
 
-
-
-
-static inline void new_set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
+inline void set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
 {
 	cpu->flags[flag] = enable;
 }
 
-static inline void old_set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
-{
-	cpu->sr ^= (-enable ^ cpu->sr) & flag;
-}
-
-
-inline void set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
-{
-#ifdef CPU_USE_OLD_FLAGS
-	old_set_flag(cpu, flag, enable);
-#else
-	new_set_flag(cpu, flag, enable);
-#endif
-}
-
-static inline bool new_get_flag(nes_cpu_t *cpu, int flag)
-{
-	return cpu->flags[flag];
-}
-
-static inline bool old_get_flag(nes_cpu_t *cpu, int flag)
-{
-	return (cpu->sr & flag) != 0;
-}
 
 inline bool get_flag(nes_cpu_t *cpu, int flag)
 {
-#ifdef CPU_USE_OLD_FLAGS
-	return old_get_flag(cpu, flag);
-#else
-	return new_get_flag(cpu, flag);
-#endif
+	return cpu->flags[flag];
 }
 
 

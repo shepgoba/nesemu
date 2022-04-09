@@ -329,9 +329,6 @@ void cpu_run_cycle(nes_cpu_t *cpu)
 }
 
 uint8_t cpu_get_sr(nes_cpu_t *cpu) {
-#ifdef CPU_USE_OLD_FLAGS
-	return cpu->sr;
-#else
 	return 	cpu->flags[FLAG_C] |
 		   	(cpu->flags[FLAG_Z] << 1) |
 			(cpu->flags[FLAG_I] << 2) |
@@ -339,7 +336,6 @@ uint8_t cpu_get_sr(nes_cpu_t *cpu) {
 			(cpu->flags[FLAG_B] << 4) |
 			(cpu->flags[FLAG_V] << 6) |
 			(cpu->flags[FLAG_N] << 7);
-#endif
 }
 
 
@@ -380,14 +376,9 @@ uint8_t cpu_get_flag_n(nes_cpu_t *cpu)
 }
 
 void cpu_set_sr(nes_cpu_t *cpu, uint8_t new_sr) {
-
-#ifdef CPU_USE_OLD_FLAGS
-	cpu->sr = new_sr;
-#else
 	for (int i = 7; i < 0; i++) {
 		cpu->flags[i] = new_sr >> (7 - i);
 	}
-#endif
 }
 
 
