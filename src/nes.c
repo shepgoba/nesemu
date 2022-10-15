@@ -134,7 +134,7 @@ void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 	}
 }
 
-void nes_do_frame_cyckle(nes_t *nes)
+void nes_do_frame_cycle(nes_t *nes)
 {
 	nes->frame_start = SDL_GetTicks();
 

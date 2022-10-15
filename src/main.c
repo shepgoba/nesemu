@@ -94,16 +94,8 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-		nes.frame_start = SDL_GetTicks();
 
-		for (uint32_t master_clock_frame = 0; 
-			master_clock_frame < MASTER_CLOCK_CYCLES_PER_FRAME; 
-			master_clock_frame++) {
-			nes_do_master_cycle(&nes, master_clock_frame);
-			nes.master_clock_cycles++;
-		}
-		nes.frames++;
-
+		nes_do_frame_cycle(&nes);
 		nes_delay_if_necessary(&nes);
 	}
 
