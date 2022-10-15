@@ -30,12 +30,10 @@ void handle_keypress(SDL_Event *event, uint8_t *key_state)
 		}
 	}
 
-	if (key_state) {
-		*key_state = temp_key_state;
-	}
+	*key_state = temp_key_state;
 }
 
-uint32_t KB(uint32_t bytes)
+uint32_t KiB(uint32_t bytes)
 {
 	return bytes / 1024;
 }
@@ -68,6 +66,8 @@ uint32_t bswap32(uint32_t x)
 		((x >> 24) & 0x000000ff);
 }
 
+#define INES_ROM_MAGIC 0x4E45531A
+
 bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 {
 	if (!handle || !header || !rom)
@@ -81,7 +81,7 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 
 	uint32_t rom_magic_swapped = bswap32(header->magic);
 
-	bool rom_is_valid = rom_magic_swapped == 0x4E45531A;
+	bool rom_is_valid = rom_magic_swapped == INES_ROM_MAGIC;
 
 	if (rom_is_valid) {
 		rom->rom_size = header->PRG_ROM_size * 16384;
@@ -98,7 +98,7 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 		rom->mapper_id = (header->flags7 & 0xf0) | ((header->flags6 & 0xf0) >> 4);
 
 		if (rom->mapper_id != 0 && rom->mapper_id != 1) {
-			printf("unsupported mapper id! exiting...");
+			printf("unsupported mapper id! exiting...\n");
 			return false;
 		}
 	}

@@ -289,9 +289,6 @@ void instr_ADC_abs_y(nes_cpu_t *cpu, uint32_t instr)
 	cpu->a = (uint8_t)result;
 }
 
-//we have   0b11100100
-//should be 0b10100100
-
 void instr_ADC_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t imm8 = __get_imm8_from_opcode(instr);
