@@ -29,6 +29,8 @@
 
 
 typedef struct {
+	nes_vmemory_t *vmem;
+
 	uint8_t PPUCTRL;
 	uint8_t PPUMASK;
 	uint8_t PPUSTATUS;
@@ -38,7 +40,6 @@ typedef struct {
 	uint16_t PPUADDR;
 	uint8_t PPUDATA;
 
-	nes_vmemory_t *vmem;
 	uint8_t oam[256];
 
 	bool NMI_output;
