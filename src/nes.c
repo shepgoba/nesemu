@@ -33,18 +33,23 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 
 bool nes_load_rom(nes_t *nes, const char *path) 
 {
+	bool code = true;
+
 	FILE *rom_handle = fopen(path, "rb");
 	if (!rom_handle) {
-		return false;
+		code = false;
+		return code;
 	}
 
 	if (!get_rom_info(rom_handle, &nes->rom_header, &nes->rom_info)) {
-		return false;
+		code = false;
+		goto done;
 	}
 
 	if (nes->rom_info.mapper_id == 1) {
 		nes->cpu.use_mmc1 = true;
 		printf("setting mmc1 to true\n");
+		goto done;
 	}
 
 	bool copy_prg_rom_result = 
@@ -52,7 +57,8 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		
 	if (!copy_prg_rom_result) {
 		printf("couldn't copy PRG ROM!\n");
-		return false;
+		code = false;
+		goto done;
 	}
 
 	bool copy_chr_rom_result = read_bytes(
@@ -64,22 +70,23 @@ bool nes_load_rom(nes_t *nes, const char *path)
 
 	if (!copy_chr_rom_result) {
 		printf("couldn't copy CHR ROM!\n");
-		return false;
+		code = false;
+		goto done;
 	}
 
 	nes->rom_data = malloc(nes->rom_info.rom_size);
 	if (!nes->rom_data) {
 		printf("couldn't allocate rom data\n");
-		return false;
+		code = false;
+		goto done;
 	}
 	
 	read_bytes(nes->rom_data, nes->rom_info.rom_size, 0x10, rom_handle);	
-	
 	cpu_reset(&nes->cpu);
 
+done:
 	fclose(rom_handle);
-
-	return true;
+	return code;
 }
 
 static void render_frame(nes_render_context_t *render_ctx, uint32_t **video_data) 

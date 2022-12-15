@@ -73,7 +73,6 @@ int main(int argc, char **argv)
 	int pitch;
 	SDL_LockTexture(video_texture, NULL, (void **)&nes.video_data, &pitch);
 
-
 	while (true) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {

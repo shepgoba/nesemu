@@ -327,9 +327,7 @@ void instr_ADC_x_ind(nes_cpu_t *cpu, uint32_t instr)
 	int c_flag = get_flag(cpu, FLAG_C);
 
 	uint16_t result = cpu->a + num + c_flag;
-	/*if (cpu->pc == 0xd0c6) {
-		printf("result: %02x\n", result);
-	}*/
+
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	set_flag(cpu, FLAG_Z, (uint8_t)result == 0);
 	set_flag(cpu, FLAG_C, (result & 0x100) == 0x100);
@@ -363,8 +361,6 @@ void instr_ADC_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 	int c_flag = get_flag(cpu, FLAG_C);
 
 	uint16_t result = cpu->a + num + c_flag;
-
-
 
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	set_flag(cpu, FLAG_Z, (uint8_t)result == 0);
@@ -412,16 +408,7 @@ void instr_AND_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	//__set_value_abs_y(cpu, addr, num);
 }
-/*
-_instr_AND_imm:
-	shr edx, 8
-	and dl, [rcx + 2]
-	mov [rcx + 2], dl
-	setz byte ptr [rcx + 8]
-	shr dl, 7
-	mov [rcx + 0x0e], dl
-	ret
-*/
+
 void instr_AND_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t num = __get_imm8_from_opcode(instr);
