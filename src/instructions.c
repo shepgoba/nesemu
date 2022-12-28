@@ -379,8 +379,6 @@ void instr_AND_abs(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_abs(cpu, addr, num);
 }
 
 void instr_AND_abs_x(nes_cpu_t *cpu, uint32_t instr)
@@ -392,8 +390,6 @@ void instr_AND_abs_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_abs_x(cpu, addr, num);
 }
 
 void instr_AND_abs_y(nes_cpu_t *cpu, uint32_t instr)
@@ -405,8 +401,6 @@ void instr_AND_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_abs_y(cpu, addr, num);
 }
 
 void instr_AND_imm(nes_cpu_t *cpu, uint32_t instr)
@@ -428,8 +422,6 @@ void instr_AND_ind_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_ind_y(cpu, addr, num);
 }
 
 void instr_AND_x_ind(nes_cpu_t *cpu, uint32_t instr)
@@ -441,8 +433,6 @@ void instr_AND_x_ind(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_x_ind(cpu, addr, num);
 }
 
 void instr_AND_zpg(nes_cpu_t *cpu, uint32_t instr)
@@ -454,8 +444,6 @@ void instr_AND_zpg(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_zpg(cpu, addr, num);
 }
 
 void instr_AND_zpg_x(nes_cpu_t *cpu, uint32_t instr)
@@ -467,8 +455,6 @@ void instr_AND_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	//__set_value_zpg_x(cpu, addr, num);
 }
 
 void instr_ASL_A(nes_cpu_t *cpu, uint32_t instr)
@@ -843,7 +829,6 @@ void instr_DEC_abs_x(nes_cpu_t *cpu, uint32_t instr)
 
 	num--;
 
-
 	set_flag(cpu, FLAG_Z, num == 0);
 	set_flag(cpu, FLAG_N, __is_negative(num));
 
@@ -899,8 +884,6 @@ void instr_EOR_abs(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs(cpu, addr, num);
 }
 
 void instr_EOR_abs_x(nes_cpu_t *cpu, uint32_t instr)
@@ -912,8 +895,6 @@ void instr_EOR_abs_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs_x(cpu, addr, num);
 }
 
 void instr_EOR_abs_y(nes_cpu_t *cpu, uint32_t instr)
@@ -925,8 +906,6 @@ void instr_EOR_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs_y(cpu, addr, num);
 }
 
 void instr_EOR_imm(nes_cpu_t *cpu, uint32_t instr)
@@ -947,8 +926,6 @@ void instr_EOR_ind_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_ind_y(cpu, addr, num);
 }
 
 void instr_EOR_x_ind(nes_cpu_t *cpu, uint32_t instr)
@@ -960,8 +937,6 @@ void instr_EOR_x_ind(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_x_ind(cpu, addr, num);
 }
 
 void instr_EOR_zpg(nes_cpu_t *cpu, uint32_t instr)
@@ -973,8 +948,6 @@ void instr_EOR_zpg(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_zpg(cpu, addr, num);
 }
 
 void instr_EOR_zpg_x(nes_cpu_t *cpu, uint32_t instr)
@@ -986,8 +959,6 @@ void instr_EOR_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_zpg_x(cpu, addr, num);
 }
 
 void instr_INC_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -1367,8 +1338,6 @@ void instr_ORA_abs(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs(cpu, addr, num);
 }
 
 void instr_ORA_abs_x(nes_cpu_t *cpu, uint32_t instr)
@@ -1380,8 +1349,6 @@ void instr_ORA_abs_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs_x(cpu, addr, num);
 }
 
 void instr_ORA_abs_y(nes_cpu_t *cpu, uint32_t instr)
@@ -1393,8 +1360,6 @@ void instr_ORA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_abs_y(cpu, addr, num);
 }
 
 
@@ -1416,8 +1381,6 @@ void instr_ORA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_ind_y(cpu, addr, num);
 }
 
 void instr_ORA_x_ind(nes_cpu_t *cpu, uint32_t instr)
@@ -1429,8 +1392,6 @@ void instr_ORA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_x_ind(cpu, addr, num);
 }
 
 void instr_ORA_zpg(nes_cpu_t *cpu, uint32_t instr)
@@ -1442,8 +1403,6 @@ void instr_ORA_zpg(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_zpg(cpu, addr, num);
 }
 
 void instr_ORA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
@@ -1455,8 +1414,6 @@ void instr_ORA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
-
-	__set_value_zpg_x(cpu, addr, num);
 }
 
 void instr_PHA(nes_cpu_t *cpu, uint32_t instr)
