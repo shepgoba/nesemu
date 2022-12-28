@@ -18,9 +18,7 @@ static inline bool __is_negative(uint8_t num)
 
 static inline void oper_branch_offset(nes_cpu_t *cpu, int8_t offset)
 {
-	//uint16_t result = cpu->pc + offset;
-	//bool has_carry = (result & 0x100) == 0x100;
-
+	// TODO: check for page overflow
 	if (__has_page_overflow(cpu->pc, offset)) {
 
 	}
@@ -42,7 +40,6 @@ inline bool get_flag(nes_cpu_t *cpu, int flag)
 
 void oper_push_16(nes_cpu_t *cpu, uint16_t value)
 {
-	//printf("pog we writing: %04x, to: %04x\n", value, cpu->sp + 0x100);
 	mem_write_16(cpu, (cpu->sp - 1) + 0x100, value);
 	cpu->sp -= 2;
 }
@@ -77,13 +74,11 @@ static inline void __set_value_abs(nes_cpu_t *cpu, uint16_t address, uint8_t val
 
 static inline void __set_value_abs_x(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	//int c_flag = get_flag(cpu, FLAG_C);
 	mem_write_8(cpu, address + cpu->x, value);
 }
 
 static inline void __set_value_abs_y(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	//int c_flag = get_flag(cpu, FLAG_C);
 	mem_write_8(cpu, address + cpu->y, value);
 }
 
@@ -104,8 +99,6 @@ static inline void __set_value_zpg_y(nes_cpu_t *cpu, uint8_t address, uint8_t va
 
 static inline void __set_value_ind_y(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	//int c_flag = get_flag(cpu, FLAG_C);
-
 	uint8_t lo_addr = mem_read_8(cpu, (uint8_t)address);
 	uint8_t hi_addr = mem_read_8(cpu, (uint8_t)(address + 1));
 
@@ -116,16 +109,11 @@ static inline void __set_value_ind_y(nes_cpu_t *cpu, uint16_t address, uint8_t v
 
 static inline void __set_value_x_ind(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	
-	//uint16_t addr = mem_read_16(cpu, address + cpu->x);
-
 	uint8_t lo_addr = mem_read_8(cpu, (uint8_t)(address + cpu->x));
 	uint8_t hi_addr = mem_read_8(cpu, (uint8_t)(address + cpu->x + 1));
 
-
-
 	uint16_t addr = (hi_addr << 8) | lo_addr;
-	//printf("addr: %04x, value: %02x", addr, value);
+
 	mem_write_8(cpu, addr, value);
 }
 
@@ -178,11 +166,8 @@ static inline uint8_t __get_value_zpg_y(nes_cpu_t *cpu, uint8_t address)
 
 static inline uint8_t __get_value_ind_y(nes_cpu_t *cpu, uint8_t address, bool add_cycle_if_page_crossed)
 {
-	//int c_flag = get_flag(cpu, FLAG_C);
 	uint8_t lo_addr = mem_read_8(cpu, (uint8_t)address);
 	uint8_t hi_addr = mem_read_8(cpu, (uint8_t)(address + 1));
-
-
 
 	uint16_t addr = (hi_addr << 8) | lo_addr;
 
@@ -244,7 +229,6 @@ void instr_ADC_abs(nes_cpu_t *cpu, uint32_t instr)
 
 	uint16_t result = cpu->a + num + c_flag;
 
-
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	set_flag(cpu, FLAG_Z, (uint8_t)result == 0);
 	set_flag(cpu, FLAG_C, (result & 0x100) == 0x100);
@@ -260,7 +244,6 @@ void instr_ADC_abs_x(nes_cpu_t *cpu, uint32_t instr)
 	int c_flag = get_flag(cpu, FLAG_C);
 
 	uint16_t result = cpu->a + num + c_flag;
-
 
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	set_flag(cpu, FLAG_Z, (uint8_t)result == 0);
@@ -278,13 +261,10 @@ void instr_ADC_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 	uint16_t result = cpu->a + num + c_flag;
 
-
-
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	set_flag(cpu, FLAG_Z, (uint8_t)result == 0);
 	set_flag(cpu, FLAG_C, (result & 0x100) == 0x100);
 	set_flag(cpu, FLAG_N, __is_negative(result));
-
 
 	cpu->a = (uint8_t)result;
 }
@@ -333,9 +313,7 @@ void instr_ADC_x_ind(nes_cpu_t *cpu, uint32_t instr)
 	set_flag(cpu, FLAG_C, (result & 0x100) == 0x100);
 	set_flag(cpu, FLAG_N, __is_negative(result));
 
-	
 	cpu->a = (uint8_t)result;
-
 }
 
 void instr_ADC_zpg(nes_cpu_t *cpu, uint32_t instr)
