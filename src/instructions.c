@@ -1234,7 +1234,6 @@ void instr_LSR_A(nes_cpu_t *cpu, uint32_t instr)
 
 	cpu->a >>= 1;
 
-
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, 0);
 }
@@ -1263,8 +1262,6 @@ void instr_LSR_abs_x(nes_cpu_t *cpu, uint32_t instr)
 
 	num >>= 1;
 
-
-
 	set_flag(cpu, FLAG_Z, num == 0);
 	set_flag(cpu, FLAG_N, 0);
 
@@ -1278,7 +1275,6 @@ void instr_LSR_zpg(nes_cpu_t *cpu, uint32_t instr)
 	set_flag(cpu, FLAG_C, num & 1);
 
 	num >>= 1;
-
 
 	set_flag(cpu, FLAG_Z, num == 0);
 	set_flag(cpu, FLAG_N, 0);
@@ -1294,7 +1290,6 @@ void instr_LSR_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 	set_flag(cpu, FLAG_C, num & 1);
 
 	num >>= 1;
-
 
 	set_flag(cpu, FLAG_Z, num == 0);
 	set_flag(cpu, FLAG_N, 0);
@@ -1413,8 +1408,6 @@ void instr_PLA(nes_cpu_t *cpu, uint32_t instr)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-
-
 void instr_PLP(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t new_sr = (oper_pop_8(cpu) & 0b11101111) | 0b00100000;
@@ -1424,7 +1417,7 @@ void instr_PLP(nes_cpu_t *cpu, uint32_t instr)
 void instr_ROL_A(nes_cpu_t *cpu, uint32_t instr)
 {
 	int c_flag = get_flag(cpu, FLAG_C);
-	set_flag(cpu, FLAG_C, (cpu->a & 0b10000000) >> 7);
+	set_flag(cpu, FLAG_C, __get_bit_8(cpu->a, 7));
 
 	cpu->a = (cpu->a << 1) | c_flag;
 
@@ -1438,7 +1431,7 @@ void instr_ROL_abs(nes_cpu_t *cpu, uint32_t instr)
 	uint8_t num = __get_value_abs(cpu, addr);
 
 	int c_flag = get_flag(cpu, FLAG_C);
-	set_flag(cpu, FLAG_C, (num & 0b10000000) >> 7);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
 
 	num = (num << 1) | c_flag;
 
@@ -1454,7 +1447,7 @@ void instr_ROL_abs_x(nes_cpu_t *cpu, uint32_t instr)
 	uint8_t num = __get_value_abs_x(cpu, addr, false);
 
 	int c_flag = get_flag(cpu, FLAG_C);
-	set_flag(cpu, FLAG_C, (num & 0b10000000) >> 7);
+	set_flag(cpu, FLAG_C,  __get_bit_8(num, 7));
 
 	num = (num << 1) | c_flag;
 
@@ -1470,7 +1463,7 @@ void instr_ROL_zpg(nes_cpu_t *cpu, uint32_t instr)
 	uint8_t num = __get_value_zpg(cpu, addr);
 
 	int c_flag = get_flag(cpu, FLAG_C);
-	set_flag(cpu, FLAG_C, (num & 0b10000000) >> 7);
+	set_flag(cpu, FLAG_C,  __get_bit_8(num, 7));
 
 	num = (num << 1) | c_flag;
 
@@ -1486,7 +1479,7 @@ void instr_ROL_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 	uint8_t num = __get_value_zpg_x(cpu, addr);
 
 	int c_flag = get_flag(cpu, FLAG_C);
-	set_flag(cpu, FLAG_C, (num & 0b10000000) >> 7);
+	set_flag(cpu, FLAG_C,  __get_bit_8(num, 7));
 
 	num = (num << 1) | c_flag;
 
