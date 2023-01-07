@@ -1572,7 +1572,6 @@ void instr_RTI(nes_cpu_t *cpu, uint32_t instr)
 	cpu->pc = oper_pop_16(cpu);
 
 	cpu->pc--;
-
 }
 
 void instr_RTS(nes_cpu_t *cpu, uint32_t instr)
@@ -1747,8 +1746,6 @@ void instr_STA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 	__set_value_abs_y(cpu, addr, cpu->a);
 }
 
-
-
 void instr_STA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
@@ -1764,7 +1761,6 @@ void instr_STA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 void instr_STA_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
-	//printf("%04x sta zpg:\naddr:%02x, value: %02x\n", cpu->pc, addr, cpu->a);
 	__set_value_zpg(cpu, addr, cpu->a);
 }
 
@@ -1871,7 +1867,8 @@ void iinstr_ALR_imm(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_ANC_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_AND_imm(cpu, instr);
+	set_flag(cpu, FLAG_C, __is_negative(cpu->a));
 }
 
 void iinstr_ARR_imm(nes_cpu_t *cpu, uint32_t instr)
@@ -1986,7 +1983,7 @@ void iinstr_LAX_ind_y(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_LAX_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
-	int *x, *y = x;
+
 }
 
 void iinstr_LAX_zpg(nes_cpu_t *cpu, uint32_t instr)
