@@ -1,6 +1,6 @@
 #include "cpu.h"
 #include "instructions.h"
-//#define DEBUG
+#include <assert.h>
 
 uint8_t mem_read_8(nes_cpu_t *, uint16_t);
 uint16_t mem_read_16(nes_cpu_t *, uint16_t);
@@ -55,7 +55,7 @@ void cpu_check_interrupts(nes_cpu_t *cpu)
 {
 	// IRQ interrupt
 	if (!get_flag(cpu, FLAG_I)) {
-		//do_irq_interrupt(cpu);
+		do_irq_interrupt(cpu);
 	}
 
 	// NMI interrupt
@@ -66,7 +66,7 @@ void cpu_check_interrupts(nes_cpu_t *cpu)
 
 
 typedef enum {
-	X_IND,
+	X_IND = 0,
 	ZPG,
 	IMM,
 	ABS,
@@ -78,6 +78,7 @@ typedef enum {
 
 const char *str_for_addressing_mode(instr_addressing_mode mode)
 {
+	assert(mode >= 0 && mode < 8);
 	static const char *strs[] = {"X_IND", "ZPG", "IMM", "ABS", "IND_Y", "ZPG_X", "ABS_Y", "ABS_X"};
 	return strs[mode];
 }
@@ -286,49 +287,11 @@ uint8_t cpu_get_sr(nes_cpu_t *cpu) {
 			(cpu->flags[FLAG_N] << 7);
 }
 
-
-
-uint8_t cpu_get_flag_c(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_C];
-}
-
-uint8_t cpu_get_flag_z(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_Z];
-}
-
-uint8_t cpu_get_flag_i(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_I];
-}
-
-uint8_t cpu_get_flag_d(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_D];
-}
-
-uint8_t cpu_get_flag_b(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_B];
-}
-
-uint8_t cpu_get_flag_v(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_V];
-}
-
-uint8_t cpu_get_flag_n(nes_cpu_t *cpu)
-{
-	return cpu->flags[FLAG_N];
-}
-
 void cpu_set_sr(nes_cpu_t *cpu, uint8_t new_sr) {
 	for (int i = 7; i < 0; i++) {
 		cpu->flags[i] = new_sr >> (7 - i);
 	}
 }
-
 
 void cpu_cleanup(nes_cpu_t *cpu)
 {
