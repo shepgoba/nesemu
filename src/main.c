@@ -55,7 +55,6 @@ int main(int argc, char **argv)
 		exit_with_error(7, "Could not create video texture!");
 	}
 
-
 	nes_render_context_t render_ctx = {
 		renderer,
 		video_texture
@@ -85,6 +84,7 @@ int main(int argc, char **argv)
 					if (event.key.keysym.sym == SDLK_d) {
 						dump_memory(&nes.memory, "mem.bin");
 						dump_vmemory(&nes.vmemory, "vmem.bin");
+						printf("Dumping RAM / VRAM. Exiting...\n");
 						exit(0);
 					} else {
 						handle_keypress(&event, &nes.key_state);

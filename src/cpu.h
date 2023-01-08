@@ -79,7 +79,4 @@ uint8_t cpu_get_flag_b(nes_cpu_t *);
 uint8_t cpu_get_flag_v(nes_cpu_t *);
 uint8_t cpu_get_flag_n(nes_cpu_t *);
 
-//inline uint8_t __get_imm8_from_opcode(uint32_t);
-//inline uint16_t __get_imm16_from_opcode(uint32_t);
-
 #endif
