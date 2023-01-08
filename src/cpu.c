@@ -99,7 +99,7 @@ void NONE(nes_cpu_t *cpu, uint32_t instr)
 }
 
 #ifdef CPU_IMPLEMENT_ILLEGAL_OPCODES
-static void (*opcode_table[256])(nes_cpu_t *, uint32_t) = {
+static void (*const opcode_table[256])(nes_cpu_t *, uint32_t) = {
 	//0                 1           			2           		3          				4             		 	5           			6           		7       					8          		9          					A          		B           		C          				D          				E     				F
 	instr_BRK,  		instr_ORA_x_ind, 		iinstr_KILL, 		iinstr_SLO_x_ind, 		iinstr_NOP_zpg, 		instr_ORA_zpg,  		instr_ASL_zpg, 		iinstr_SLO_zpg, 			instr_PHP, 		instr_ORA_imm, 				instr_ASL_A, 	iinstr_ANC_imm, 	iinstr_NOP_abs, 		instr_ORA_abs, 			instr_ASL_abs, 		iinstr_SLO_abs,
 	instr_BPL, 			instr_ORA_ind_y, 		iinstr_KILL, 		iinstr_SLO_ind_y, 		iinstr_NOP_zpg_x, 		instr_ORA_zpg_x,  		instr_ASL_zpg_x, 	iinstr_SLO_zpg_x, 			instr_CLC, 		instr_ORA_abs_y, 			iinstr_NOP, 	iinstr_SLO_abs_y, 	iinstr_NOP_abs_x, 		instr_ORA_abs_x, 		instr_ASL_abs_x, 	iinstr_SLO_abs_x,
@@ -126,7 +126,7 @@ static void (*opcode_table[256])(nes_cpu_t *, uint32_t) = {
 	instr_BEQ, 			instr_SBC_ind_y, 		iinstr_KILL, 		iinstr_ISC_ind_y, 		iinstr_NOP_zpg_x,  		instr_SBC_zpg_x,  		instr_INC_zpg_x, 	iinstr_ISC_zpg_x, 			instr_SED, 		instr_SBC_abs_y, 			iinstr_NOP, 	iinstr_ISC_abs_y, 	iinstr_NOP_abs_x, 		instr_SBC_abs_x, 		instr_INC_abs_x, 	iinstr_ISC_abs_x
 };
 #else
-static const void (*opcode_table[256])(nes_cpu_t *, uint32_t) = {
+static void (*const opcode_table[256])(nes_cpu_t *, uint32_t) = {
 	/* 0x00 - 0x07, 0x08 - 0xF */
 	//0                 1           			2           		3           4             		5           			6           		7       8          		9          					A          		B           C          		D          				E     F
 	instr_BRK,  		instr_ORA_x_ind, 		NONE, 				NONE, 		NONE, 				instr_ORA_zpg,  		instr_ASL_zpg, 		NONE, 	instr_PHP, 		instr_ORA_imm, 				instr_ASL_A, 	NONE, 		NONE, 					instr_ORA_abs, 			instr_ASL_abs, 	NONE,
@@ -197,58 +197,6 @@ static const uint8_t cycle_count_table[256] = {
 };
 
 
-
-
-/*
-$2000: $7f
-$2001: $8a
-= $8a7f
-
-$2002: $e0
-$2003: $3c
-= $3ce0
-
-
-CLC ; clear carry
-LDA $2000
-ADC $2002 ; carry happened
-STA $2004
-LDA $2001
-ADC $2003
-STA $2005
-
-$2004: $5f
-$2005: $c7
-= $c75f
-
-//      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-/* 00	2, 2, 0, 0, 0, 3, 5, 0, 1, 2, 2, 0, 0, 3, 6, 0, // good
-/* 10	2, 2, 0, 0, 0, 4, 6, 0, 1, 3, 0, 0, 0, 3, 7, 0, // good
-/* 20	3, 6, 0, 0, 2, 3, 2, 0, 1, 2, 1, 0, 3, 4, 3, 0,
-/* 30	2, 5, 0, 0, 0, 4, 2, 0, 1, 4, 0, 0, 0, 4, 3, 0,
-/* 40	1, 2, 0, 0, 0, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
-/* 50	2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0,
-/* 60	1, 6, 0, 0, 0, 3, 2, 0, 1, 2, 1, 0, 3, 4, 3, 0,
-/* 70	2, 5, 0, 0, 0, 4, 2, 0, 1, 4, 0, 0, 0, 4, 3, 0,
-/* 80	0, 2, 0, 0, 2, 2, 2, 0, 1, 0, 1, 0, 3, 3, 3, 0,
-/* 90	2, 2, 0, 0, 2, 2, 2, 0, 1, 3, 1, 0, 0, 3, 0, 0,
-/* A0	2, 2, 2, 0, 2, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
-/* B0	2, 2, 0, 0, 2, 2, 2, 0, 1, 3, 1, 0, 3, 3, 3, 0,
-/* C0	2, 2, 0, 0, 2, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
-/* D0	2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0,
-/* E0 2, 2, 0, 0, 2, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
-/* F0	2, 2, 0, 0, 0, 2, 2, 0, 1, 3, 0, 0, 0, 3, 3, 0,
-};
-
-\
-
-
-
-guest
-
-*/
-//static uint32_t next_instruction;
-
 uint32_t cpu_fetch_instruction(nes_cpu_t *cpu)
 {
 
@@ -261,7 +209,7 @@ uint32_t cpu_fetch_instruction(nes_cpu_t *cpu)
 		final_opcode = (op << 16) | (imm8 << 8);
 	} else if (sz == 3) {
 		uint16_t imm16 = mem_read_16(cpu, cpu->pc + 1);
-		final_opcode = (op << 16) | (imm16);
+		final_opcode = (op << 16) | imm16;
 	}
 	return final_opcode;
 }

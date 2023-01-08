@@ -225,6 +225,8 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 		default:
 			return mem[address];
 	}
+
+	return 0;
 }
 
 uint16_t mem_read_16(nes_cpu_t *cpu, uint16_t address)
