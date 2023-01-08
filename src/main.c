@@ -85,7 +85,8 @@ int main(int argc, char **argv)
 						dump_memory(&nes.memory, "mem.bin");
 						dump_vmemory(&nes.vmemory, "vmem.bin");
 						printf("Dumping RAM / VRAM. Exiting...\n");
-						exit(0);
+
+						goto main_cleanup;
 					} else {
 						handle_keypress(&event, &nes.key_state);
 					}
