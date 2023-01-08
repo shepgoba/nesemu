@@ -82,8 +82,8 @@ int main(int argc, char **argv)
 				case SDL_KEYDOWN:
 				case SDL_KEYUP: {
 					if (event.key.keysym.sym == SDLK_d) {
-						dump_memory(&nes.memory, "mem.bin");
-						dump_vmemory(&nes.vmemory, "vmem.bin");
+						nes_dump_memory(&nes, "mem.bin");
+						nes_dump_vmemory(&nes, "vmem.bin");
 						printf("Dumping RAM / VRAM. Exiting...\n");
 
 						goto main_cleanup;

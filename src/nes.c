@@ -184,3 +184,28 @@ void nes_delay_if_necessary(nes_t *nes)
 	}
 }
 
+
+void nes_dump_memory(nes_t *nes, const char *fname)
+{
+	FILE *dump = fopen(fname, "wb+");
+	if (!dump) {
+		printf("couldn't open memory dump file!\n");
+		return;
+	}
+
+	fwrite(nes->memory.data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_6502, dump);
+
+	fclose(dump);
+}
+
+void nes_dump_vmemory(nes_t *nes, const char *fname)
+{
+	FILE *dump = fopen(fname, "wb+");
+	if (!dump) {
+		printf("couldn't open vmemory dump file!\n");
+		return;
+	}
+
+	fwrite(nes->memory.data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_2C02, dump);
+	fclose(dump);
+}

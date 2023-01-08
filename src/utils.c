@@ -104,29 +104,3 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 	}
 	return rom_is_valid;
 }
-
-void dump_memory(nes_memory_t *mem, const char *fname)
-{
-	FILE *dump = fopen(fname, "wb+");
-	if (!dump) {
-		printf("couldn't open memory dump file!\n");
-		return;
-	}
-
-	fwrite(mem->data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_6502, dump);
-
-	fclose(dump);
-}
-
-void dump_vmemory(nes_vmemory_t *mem, const char *fname)
-{
-	FILE *dump = fopen(fname, "wb+");
-	if (!dump) {
-		printf("couldn't open vmemory dump file!\n");
-		return;
-	}
-
-	fwrite(mem->data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_2C02, dump);
-	fclose(dump);
-}
-
