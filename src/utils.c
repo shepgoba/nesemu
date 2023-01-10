@@ -33,11 +33,6 @@ void handle_keypress(SDL_Event *event, uint8_t *key_state)
 	*key_state = temp_key_state;
 }
 
-uint32_t KiB(uint32_t bytes)
-{
-	return bytes / 1024;
-}
-
 bool get_bit(uint8_t value, int bit) 
 {
 	return (value >> bit) & 1;

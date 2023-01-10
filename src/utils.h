@@ -29,7 +29,6 @@ typedef struct {
 	bool use_trainer;
 } nes_rom_info_t;
 
-uint32_t KiB(uint32_t);
 uint32_t bswap32(uint32_t);
 bool get_bit(uint8_t, int);
 bool read_bytes(void *, uint32_t, uint32_t, FILE *);

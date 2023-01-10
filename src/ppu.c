@@ -109,7 +109,8 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 			uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
 			uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
 
-			video_data[ppu->scanline * INTERNAL_VIDEO_WIDTH + tile * 0x8 + pixel_x] = final_color;
+			uint16_t pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + tile * 0x8 + pixel_x;
+			video_data[pixel_addr] = final_color;
 		}
 	}
 }
