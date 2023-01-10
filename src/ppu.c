@@ -2,16 +2,14 @@
 
 void ppu_init(nes_ppu_t *ppu, nes_vmemory_t *vmem) 
 {
-	if (ppu && vmem) {
-		ppu->vmem = vmem;
-		ppu->dot_clock_scanline = 0;
-		ppu->scanline = 0;
-		ppu->NMI_output = false;
-		ppu->NMI_occurred = false;
-		ppu->PPUADDR_2nd_write = false;
-		ppu->nametable_base = 0;
-		ppu->PPUADDR_increment_amount = 1;
-	}
+	ppu->vmem = vmem;
+	ppu->dot_clock_scanline = 0;
+	ppu->scanline = 0;
+	ppu->NMI_output = false;
+	ppu->NMI_occurred = false;
+	ppu->PPUADDR_2nd_write = false;
+	ppu->nametable_base = 0;
+	ppu->PPUADDR_increment_amount = 1;
 }
 
 void ppu_update_registers(nes_ppu_t *ppu, bool *should_update_frame, uint32_t *video_data)

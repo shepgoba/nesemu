@@ -1,9 +1,9 @@
 #ifndef MEMORY_INCLUDE
 #define MEMORY_INCLUDE
 #include <string.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #define ADDRESS_SPACE_SIZE_6502 0x10000
 #define ADDRESS_SPACE_SIZE_2C02 0x4000
@@ -24,10 +24,10 @@ typedef struct __nes_vmemory {
     uint8_t *data;
 } nes_vmemory_t;
 
-int memory_init(nes_memory_t *);
+bool memory_init(nes_memory_t *);
 void memory_cleanup(nes_memory_t *);
 
-int vmemory_init(nes_vmemory_t *);
+bool vmemory_init(nes_vmemory_t *);
 void vmemory_cleanup(nes_vmemory_t *);
 
 

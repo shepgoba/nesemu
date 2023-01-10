@@ -13,12 +13,11 @@ void exit_with_error(int code, const char *message, ...)
 
 void handle_keypress(SDL_Event *event, uint8_t *key_state)
 {
-	if (!event || !key_state)
+	if (!event)
 		return;
 
 	static const SDL_KeyCode keys[] = {SDLK_a, SDLK_s, SDLK_o, SDLK_p, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT};
 	
-
 	SDL_KeyCode pressed_key = event->key.keysym.sym;
 	bool key_down = event->key.type == SDL_KEYDOWN;
 

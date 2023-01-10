@@ -2,16 +2,16 @@
 #include "cpu.h"
 #include "ppu.h"
 
-int memory_init(nes_memory_t *memory)
+bool memory_init(nes_memory_t *memory)
 {
 	memory->data = malloc(ADDRESS_SPACE_SIZE_6502);
 	if (!memory->data) {
 		printf("error allocating memory!\n");
-		return 0;
+		return false;
 	}
 	memset(memory->data, 0, ADDRESS_SPACE_SIZE_6502);
 
-	return 1;
+	return true;
 }
 
 
@@ -20,15 +20,15 @@ void memory_cleanup(nes_memory_t *memory)
 	free(memory->data);
 }
 
-int vmemory_init(nes_vmemory_t *vmemory)
+bool vmemory_init(nes_vmemory_t *vmemory)
 {
 	vmemory->data = malloc(ADDRESS_SPACE_SIZE_2C02);
 	if (!vmemory->data) {
 		printf("error allocating video memory!\n");
-		return 0;
+		return false;
 	}
 	memset(vmemory->data, 0, ADDRESS_SPACE_SIZE_2C02);
-	return 1;
+	return true;
 }
 
 
