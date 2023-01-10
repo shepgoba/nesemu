@@ -65,8 +65,8 @@ static inline uint8_t reverse(uint8_t num)
 				| ((num & 0x02) << 5)
 				| ((num & 0x04) << 3)
 				| ((num & 0x08) << 1)
-				| ((num & 0x20) >> 3)
 				| ((num & 0x10) >> 1)
+				| ((num & 0x20) >> 3)
 				| ((num & 0x40) >> 5)
 				| ((num & 0x80) >> 7);
 	return pog;
@@ -145,17 +145,19 @@ void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 					uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
 											(lo_bits >> (7 - pixel_x)) & 1;
 
+					if (pixel_data == 0)
+						continue;
+
 					uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f10 + sprite_palette * 4;
 					uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
 					int pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + (sprite_x + pixel_x);
 
 					// sprite 0 hit
-					if (pixel_data && video_data[pixel_addr]) {
+					if (video_data[pixel_addr]) {
 						ppu->sprite0hit = true;
 					}
 
-					if (pixel_data != 0)
-						video_data[pixel_addr] = final_color;
+					video_data[pixel_addr] = final_color;
 				}
 			}
 		}
