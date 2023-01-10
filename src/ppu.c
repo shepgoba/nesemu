@@ -21,29 +21,31 @@ void ppu_update_registers(nes_ppu_t *ppu, bool *should_update_frame, uint32_t *v
 		ppu->dot_clock_scanline = 0;
 	}
 
-	if (ppu->scanline == 241) {
+	if (ppu->scanline < 240) {
+		// normal operation
+		if (ppu->dot_clock_scanline == 340)
+			ppu_draw_scanline(ppu, video_data);
+	} else if (ppu->scanline == 241) {
+		// start of vblank
 		if (ppu->dot_clock_scanline == 1) {
 			ppu->PPUSTATUS |= 0b01111111;
 			ppu->NMI_occurred = true;
 			ppu->in_vblank = true;
 		}
 	} else if (ppu->scanline == 262) {
+		// end of vblank
 		ppu->scanline = 0;
 		if (ppu->dot_clock_scanline == 0) {
 			ppu->NMI_occurred = false;
 			ppu->in_vblank = false;
 
-			if (should_update_frame) {
-				*should_update_frame = true;
-			}
+			*should_update_frame = true;
 		} else if (ppu->dot_clock_scanline == 1) {
 			ppu->PPUSTATUS &= 0b01111111;
 			ppu->sprite0hit = false;
 		}
 	}
-	if (ppu->scanline < 240 && ppu->dot_clock_scanline == 340) {
-		ppu_draw_scanline(ppu, video_data);
-	}
+	
 }
 
 static const uint32_t ntsc_rgb_table[64] = {
@@ -81,19 +83,11 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 	for (int tile = 0; tile < HORIZONTAL_TILE_COUNT; tile++) {
 		int palette_offset = (ppu->scanline / 32) * 8 + tile / 4;
 		uint8_t palette_data = attributedata[palette_offset];
-		uint8_t specific_palette_data;
 
 		bool horizontal_odd = (tile / 2) & 1;
 		bool vertical_odd = (ppu->scanline / 16) & 1;
-		if (horizontal_odd && vertical_odd) {
-			specific_palette_data = palette_data >> 6;
-		} else if (vertical_odd) {
-			specific_palette_data = (palette_data >> 4) & 0b11;
-		} else if (horizontal_odd) {
-			specific_palette_data = (palette_data >> 2) & 0b11;
-		} else {
-			specific_palette_data = palette_data & 0b11;
-		}
+
+		uint8_t specific_palette_data = palette_data >> (((vertical_odd << 1) | horizontal_odd) << 1) & 0b11;
 
 		int tile_index = (ppu->scanline / 8) * 32 + tile;
 		uint8_t tile_data_offset = (ppu->vmem->data + ppu->nametable_base)[tile_index];
