@@ -27,6 +27,7 @@ void handle_keypress(SDL_Event *event, uint8_t *key_state)
 	for (int idx = 0; idx < 8; idx++) {
 		if (pressed_key == keys[idx]) {
 			temp_key_state ^= (-key_down ^ temp_key_state) & (1UL << idx);
+			break;
 		}
 	}
 
