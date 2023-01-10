@@ -72,95 +72,108 @@ static inline uint8_t reverse(uint8_t num)
 	return pog;
 }
 
-void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
+
+void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 {
-	if (ppu->should_render_background) {
-		uint8_t *bg_tiledata = ppu->vmem->data + ppu->background_tiledata_base;	
-		uint8_t *attributedata = ppu->vmem->data + ppu->nametable_base + 0x3c0;
+	uint8_t *bg_tiledata = ppu->vmem->data + ppu->background_tiledata_base;	
+	uint8_t *attributedata = ppu->vmem->data + ppu->nametable_base + 0x3c0;
 
-		for (int tile = 0; tile < HORIZONTAL_TILE_COUNT; tile++) {
-			int palette_offset = (ppu->scanline / 32) * 8 + tile / 4;
-			uint8_t palette_data = attributedata[palette_offset];
-			uint8_t specific_palette_data;
+	for (int tile = 0; tile < HORIZONTAL_TILE_COUNT; tile++) {
+		int palette_offset = (ppu->scanline / 32) * 8 + tile / 4;
+		uint8_t palette_data = attributedata[palette_offset];
+		uint8_t specific_palette_data;
 
-			bool horizontal_odd = (tile / 2) & 1;
-			bool vertical_odd = (ppu->scanline / 16) & 1;
-			if (horizontal_odd && vertical_odd) {
-				specific_palette_data = palette_data >> 6;
-			} else if (vertical_odd) {
-				specific_palette_data = (palette_data >> 4) & 0b11;
-			} else if (horizontal_odd) {
-				specific_palette_data = (palette_data >> 2) & 0b11;
-			} else {
-				specific_palette_data = palette_data & 0b11;
-			}
+		bool horizontal_odd = (tile / 2) & 1;
+		bool vertical_odd = (ppu->scanline / 16) & 1;
+		if (horizontal_odd && vertical_odd) {
+			specific_palette_data = palette_data >> 6;
+		} else if (vertical_odd) {
+			specific_palette_data = (palette_data >> 4) & 0b11;
+		} else if (horizontal_odd) {
+			specific_palette_data = (palette_data >> 2) & 0b11;
+		} else {
+			specific_palette_data = palette_data & 0b11;
+		}
 
-			int tile_index = (ppu->scanline / 8) * 32 + tile;
-			uint8_t tile_data_offset = (ppu->vmem->data + ppu->nametable_base)[tile_index];
-			int offset = (tile_data_offset * 16) + (ppu->scanline % 8);
+		int tile_index = (ppu->scanline / 8) * 32 + tile;
+		uint8_t tile_data_offset = (ppu->vmem->data + ppu->nametable_base)[tile_index];
+		int offset = (tile_data_offset * 16) + (ppu->scanline % 8);
+		
+		uint8_t lo_bits = bg_tiledata[offset];
+		uint8_t hi_bits = bg_tiledata[offset + 8];
+
+		for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
+			uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
+									(lo_bits >> (7 - pixel_x)) & 1;
 			
-			uint8_t lo_bits = bg_tiledata[offset];
-			uint8_t hi_bits = bg_tiledata[offset + 8];
+			uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
+			uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
 
+			video_data[ppu->scanline * INTERNAL_VIDEO_WIDTH + tile * 0x8 + pixel_x] = final_color;
+		}
+	}
+}
+
+void ppu_draw_sprite_scanline(nes_ppu_t *ppu, uint32_t *video_data)
+{
+	uint8_t *sprite_tiledata = ppu->vmem->data + ppu->sprite_tiledata_base;
+ 
+	for (int oam_idx = 0; oam_idx < 0x40; oam_idx += 4) {
+		uint8_t sprite_y = ppu->oam[oam_idx];
+
+		// 0xef to 0xff is off screen and will be invisible, so continue
+		if (sprite_y >= 0xef && sprite_y <= 0xff) {
+			continue;
+		}
+
+		uint8_t sprite_tile_idx = ppu->oam[oam_idx + 1];
+		uint8_t sprite_attributes = ppu->oam[oam_idx + 2];
+		uint8_t sprite_x = ppu->oam[oam_idx + 3];
+		
+		int sprite_palette = sprite_attributes & 0b11;
+
+
+		if (ppu->scanline >= sprite_y + 1 && ppu->scanline < sprite_y + 9) {
+			int slice_offset = (sprite_tile_idx * 16) + ((ppu->scanline - sprite_y - 1) % 8) % 8;//+ (((8 - (sprite_y - 1)) % 8) + (ppu->scanline % 8)) % 8;
+
+			uint8_t lo_bits = sprite_tiledata[slice_offset];
+			uint8_t hi_bits = sprite_tiledata[slice_offset + 8];
+			if (__get_bit_8(sprite_attributes, 6)) {
+				lo_bits = reverse(lo_bits);
+				hi_bits = reverse(hi_bits);
+			}
 			for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 				uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
-									 (lo_bits >> (7 - pixel_x)) & 1;
-				
-				uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
-				uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
+										(lo_bits >> (7 - pixel_x)) & 1;
 
-				video_data[ppu->scanline * INTERNAL_VIDEO_WIDTH + tile * 0x8 + pixel_x] = final_color;
+				if (pixel_data == 0)
+					continue;
+
+				uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f10 + sprite_palette * 4;
+				uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
+				int pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + (sprite_x + pixel_x);
+
+				// sprite 0 hit
+				if (video_data[pixel_addr]) {
+					ppu->sprite0hit = true;
+				}
+
+				video_data[pixel_addr] = final_color;
 			}
 		}
 	}
+}
+/*
+TODO: Not assume background pixels are always first
+*/
+void ppu_draw_scanline(nes_ppu_t *ppu, uint32_t *video_data)
+{
+	if (ppu->should_render_background) {
+		ppu_draw_background_scanline(ppu, video_data);
+	}
 
 	if (ppu->should_render_sprites) {
-		uint8_t *sprite_tiledata = ppu->vmem->data + ppu->sprite_tiledata_base;
- 
-		for (int oam_idx = 0; oam_idx < 0x40; oam_idx += 4) {
-			uint8_t sprite_y = ppu->oam[oam_idx];
-
-			// 0xef to 0xff is off screen and will be invisible, so continue
-			if (sprite_y >= 0xef && sprite_y <= 0xff) {
-				continue;
-			}
-
-			uint8_t sprite_tile_idx = ppu->oam[oam_idx + 1];
-			uint8_t sprite_attributes = ppu->oam[oam_idx + 2];
-			uint8_t sprite_x = ppu->oam[oam_idx + 3];
-			
-			int sprite_palette = sprite_attributes & 0b11;
-
-
-			if (ppu->scanline >= sprite_y + 1 && ppu->scanline < sprite_y + 9) {
-				int slice_offset = (sprite_tile_idx * 16) + ((ppu->scanline - sprite_y - 1) % 8) % 8;//+ (((8 - (sprite_y - 1)) % 8) + (ppu->scanline % 8)) % 8;
-
-				uint8_t lo_bits = sprite_tiledata[slice_offset];
-				uint8_t hi_bits = sprite_tiledata[slice_offset + 8];
-				if (__get_bit_8(sprite_attributes, 6)) {
-					lo_bits = reverse(lo_bits);
-					hi_bits = reverse(hi_bits);
-				}
-				for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
-					uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
-											(lo_bits >> (7 - pixel_x)) & 1;
-
-					if (pixel_data == 0)
-						continue;
-
-					uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f10 + sprite_palette * 4;
-					uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
-					int pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + (sprite_x + pixel_x);
-
-					// sprite 0 hit
-					if (video_data[pixel_addr]) {
-						ppu->sprite0hit = true;
-					}
-
-					video_data[pixel_addr] = final_color;
-				}
-			}
-		}
+		ppu_draw_sprite_scanline(ppu, video_data);
 	}
 }
 
