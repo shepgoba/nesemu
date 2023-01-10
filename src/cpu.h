@@ -45,14 +45,14 @@ typedef struct __nes_cpu {
 
 	uint8_t flags[CPU_NUM_FLAGS];
 
-	bool use_mmc1;
-	mmc1_t mmc1;
-
 	nes_memory_t *mem;
 	nes_ppu_t *ppu;
 
 	uint32_t wait_cycles;
 	uint32_t total_cycles;
+
+	bool use_mmc1;
+	mmc1_t mmc1;
 	
 	uint8_t key_state;
 	bool strobe_keys;

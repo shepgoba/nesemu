@@ -38,7 +38,7 @@ void vmemory_cleanup(nes_vmemory_t *vmemory)
 }
 
 
-void trol_set_bit(uint8_t *byte, int bit, int status)
+static inline void set_bit(uint8_t *byte, int bit, int status)
 {
 	*byte ^= (-status ^ *byte) & (1UL << bit);
 }
@@ -57,7 +57,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 			} else {
 				if (cpu->mmc1.shift_writes == 4) {
 					int bit = value & 1;
-					//trol_set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);
+					//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);
 
 
 					int idx = cpu->mmc1.shift_register & 0xf;
@@ -70,7 +70,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				} else {
 					int bit = value & 1;
 
-					//trol_set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);// <<= (value & 1);
+					//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);// <<= (value & 1);
 
 					cpu->mmc1.shift_writes++;
 					printf("pc:%04x, %i\n", cpu->pc, bit);
@@ -128,7 +128,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 			break;
 		}
 		case OAMDATA_ADDR: {
-			printf("we writing to OAMDATA!\n");
+			printf("we are writing to OAMDATA!\n");
 			ppu->oam[ppu->OAMADDR] = value;
 			ppu->OAMADDR++;
 			break;
@@ -231,8 +231,6 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 
 uint16_t mem_read_16(nes_cpu_t *cpu, uint16_t address)
 {
-	uint8_t *mem = cpu->mem->data;
-
 	uint8_t lo_byte = mem_read_8(cpu, address);
 	uint8_t hi_byte = mem_read_8(cpu, address + 1);
 	

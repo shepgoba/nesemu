@@ -7,7 +7,7 @@ void exit_with_error(int code, const char *message, ...)
 
 	printf(message, args);
 	va_end(args);
-	putc('\n', stdout);
+	fputc('\n', stdout);
 	exit(code);
 }
 
