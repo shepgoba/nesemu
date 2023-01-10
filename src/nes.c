@@ -171,15 +171,18 @@ static void nes_delay(nes_t *nes, uint32_t time)
 	SDL_Delay(time);
 }
 
+/*
+TODO: Might want to improve delay logic
+*/
 void nes_delay_if_necessary(nes_t *nes)
 {
-	static const double TARGET_DELAY_TIME = 
+	static const double TARGET_DELAY_TIME_MS = 
 		MILLISECONDS_PER_SECOND / (NES_FRAMES_PER_SECOND * SPEED_MODIFIER);
 	
-	uint32_t frame_time = SDL_GetTicks() - nes->frame_start;
+	uint32_t frametime = (double)(SDL_GetTicks() - nes->frame_start);
 
-	if (TARGET_DELAY_TIME > frame_time) {
-		uint32_t time_delta = TARGET_DELAY_TIME - frame_time;
+	if (TARGET_DELAY_TIME_MS > frametime) {
+		uint32_t time_delta = TARGET_DELAY_TIME_MS - frametime;
 		nes_delay(nes, time_delta);
 	}
 }
