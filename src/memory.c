@@ -43,6 +43,37 @@ static inline void set_bit(uint8_t *byte, int bit, int status)
 	*byte ^= (-status ^ *byte) & (1UL << bit);
 }
 
+void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
+{
+	if (address >= 0x8000 && address <= 0xffff) {
+		if (value & 0b10000000) {
+			cpu->mmc1.shift_register = 0;
+			cpu->mmc1.shift_writes = 0;
+		} else {
+			if (cpu->mmc1.shift_writes == 4) {
+				int bit = value & 1;
+				//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);
+
+
+				int idx = cpu->mmc1.shift_register & 0xf;
+				printf("idx is %x\n", idx);
+
+				//memcpy(cpu->mem->data + 0xC000, (uint8_t *)(cpu->rom_ptr + idx % 8 * 0x4000), 0x4000);
+
+				cpu->mmc1.shift_register = 0;
+				cpu->mmc1.shift_writes = 0;
+			} else {
+				int bit = value & 1;
+
+				//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);// <<= (value & 1);
+
+				cpu->mmc1.shift_writes++;
+				printf("pc:%04x, %i\n", cpu->pc, bit);
+			}
+		}
+	}
+}
+
 __attribute__((noinline))
 void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
@@ -50,122 +81,93 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 	nes_ppu_t *ppu = cpu->ppu;
 
 	if (cpu->use_mmc1) {
-		if (address >= 0x8000 && address <= 0xffff) {
-			if (value & 0b10000000) {
-				cpu->mmc1.shift_register = 0;
-				cpu->mmc1.shift_writes = 0;
-			} else {
-				if (cpu->mmc1.shift_writes == 4) {
-					int bit = value & 1;
-					//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);
+		mem_write_8_mmc1(cpu, address, value);
+	} else {
+		switch (address) {
+			case PPUCTRL_ADDR: {
+				ppu->PPUCTRL = value;
 
+				ppu->nametable_base = 0x2000 + (value & 3) * 0x400;
+				ppu->sprites8x16 = get_bit(value, 5);
+				ppu->background_tiledata_base = get_bit(value, 4) ? 0x1000 : 0x0000;
+				ppu->sprite_tiledata_base = get_bit(value, 3) ? 0x1000 : 0x0000;
+				ppu->PPUADDR_increment_amount = get_bit(value, 2) ? 0x20 : 0x1;
+				ppu->NMI_output = get_bit(value, 7);
+				break;
+			}
+			case PPUMASK_ADDR: {
+				/*
+				source: https://wiki.nesdev.com/w/index.php?title=PPU_registers
 
-					int idx = cpu->mmc1.shift_register & 0xf;
-					printf("idx is %x\n", idx);
+				7  bit  0
+				---- ----
+				BGRs bMmG
+				|||| ||||
+				|||| |||+- Greyscale (0: normal color, 1: produce a greyscale display)
+				|||| ||+-- 1: Show background in leftmost 8 pixels of screen, 0: Hide
+				|||| |+--- 1: Show sprites in leftmost 8 pixels of screen, 0: Hide
+				|||| +---- 1: Show background
+				|||+------ 1: Show sprites
+				||+------- Emphasize red (green on PAL/Dendy)
+				|+-------- Emphasize green (red on PAL/Dendy)
+				+--------- Emphasize blue
+				*/
 
-					//memcpy(cpu->mem->data + 0xC000, (uint8_t *)(cpu->rom_ptr + idx % 8 * 0x4000), 0x4000);
+				ppu->PPUMASK = value;
 
-					cpu->mmc1.shift_register = 0;
-					cpu->mmc1.shift_writes = 0;
+				ppu->should_render_background = get_bit(value, 3);
+				ppu->should_render_sprites = get_bit(value, 4);
+
+				break;
+			}
+			case PPUSTATUS_ADDR: {
+
+				break;
+			}
+			case OAMADDR_ADDR: {
+				ppu->OAMADDR = value;
+				break;
+			}
+			case OAMDATA_ADDR: {
+				printf("we are writing to OAMDATA!\n");
+				ppu->oam[ppu->OAMADDR] = value;
+				ppu->OAMADDR++;
+				break;
+			}
+			case PPUADDR_ADDR: {
+				if (ppu->PPUADDR_2nd_write) {
+					ppu->PPUADDR |= value;
 				} else {
-					int bit = value & 1;
+					ppu->PPUADDR = (value << 8);
+				}			
+				ppu->PPUADDR_2nd_write = !ppu->PPUADDR_2nd_write;
+				//printf("ppuaddr: %04x\n", ppu->PPUADDR);
+				break;
+			}
+			case PPUDATA_ADDR: {
+				ppu->vmem->data[ppu->PPUADDR] = value;
+				ppu->PPUADDR += ppu->PPUADDR_increment_amount;
+				break;
+			}
+			case OAMDMA_ADDR: {
+				//printf("writing 256 bytes to OAM DMA from %04x!\n", value * 0x100);
+				memcpy(ppu->oam, &mem[value * 0x100], 0x100);
+				cpu->wait_cycles = 513;
 
-					//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);// <<= (value & 1);
-
-					cpu->mmc1.shift_writes++;
-					printf("pc:%04x, %i\n", cpu->pc, bit);
+				break;
+			}
+			case CONTROLLER_IO_ADDR: {
+				cpu->strobe_keys = value & 1;
+				if (cpu->strobe_keys) {
+					cpu->strobe_keys_write_no = 0;
 				}
-
+				//printf("strobe_keys: %i\n", cpu->strobe_keys);
+				break;
 			}
-			return;
-		}
-	}
 
-	switch (address) {
-		case PPUCTRL_ADDR: {
-			//printf("we writing to PPUCTRL!\n");
-			ppu->PPUCTRL = value;
-
-			ppu->nametable_base = 0x2000 + (value & 3) * 0x400;
-			ppu->sprites8x16 = get_bit(value, 5);
-			ppu->background_tiledata_base = get_bit(value, 4) ? 0x1000 : 0x0000;
-			ppu->sprite_tiledata_base = get_bit(value, 3) ? 0x1000 : 0x0000;
-			ppu->PPUADDR_increment_amount = get_bit(value, 2) ? 0x20 : 0x1;
-			ppu->NMI_output = get_bit(value, 7);
-			break;
+			default:
+				mem[address] = value;
 		}
-		case PPUMASK_ADDR: {
-			/*
-			source: https://wiki.nesdev.com/w/index.php?title=PPU_registers
-
-			7  bit  0
-			---- ----
-			BGRs bMmG
-			|||| ||||
-			|||| |||+- Greyscale (0: normal color, 1: produce a greyscale display)
-			|||| ||+-- 1: Show background in leftmost 8 pixels of screen, 0: Hide
-			|||| |+--- 1: Show sprites in leftmost 8 pixels of screen, 0: Hide
-			|||| +---- 1: Show background
-			|||+------ 1: Show sprites
-			||+------- Emphasize red (green on PAL/Dendy)
-			|+-------- Emphasize green (red on PAL/Dendy)
-			+--------- Emphasize blue
-			*/
-
-			ppu->PPUMASK = value;
-
-			ppu->should_render_background = get_bit(value, 3);
-			ppu->should_render_sprites = get_bit(value, 4);
-
-			break;
-		}
-		case PPUSTATUS_ADDR: {
-
-			break;
-		}
-		case OAMADDR_ADDR: {
-			ppu->OAMADDR = value;
-			break;
-		}
-		case OAMDATA_ADDR: {
-			printf("we are writing to OAMDATA!\n");
-			ppu->oam[ppu->OAMADDR] = value;
-			ppu->OAMADDR++;
-			break;
-		}
-		case PPUADDR_ADDR: {
-			if (ppu->PPUADDR_2nd_write) {
-				ppu->PPUADDR |= value;
-			} else {
-				ppu->PPUADDR = (value << 8);
-			}			
-			ppu->PPUADDR_2nd_write = !ppu->PPUADDR_2nd_write;
-			//printf("ppuaddr: %04x\n", ppu->PPUADDR);
-			break;
-		}
-		case PPUDATA_ADDR: {
-			ppu->vmem->data[ppu->PPUADDR] = value;
-			ppu->PPUADDR += ppu->PPUADDR_increment_amount;
-			break;
-		}
-		case OAMDMA_ADDR: {
-			//printf("writing 256 bytes to OAM DMA from %04x!\n", value * 0x100);
-			memcpy(ppu->oam, &mem[value * 0x100], 0x100);
-			cpu->wait_cycles = 513;
-
-			break;
-		}
-		case CONTROLLER_IO_ADDR: {
-			cpu->strobe_keys = value & 1;
-			if (cpu->strobe_keys) {
-				cpu->strobe_keys_write_no = 0;
-			}
-			//printf("strobe_keys: %i\n", cpu->strobe_keys);
-			break;
-		}
-
-		default:
-			mem[address] = value;
 	}
 }
 

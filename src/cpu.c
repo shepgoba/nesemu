@@ -20,7 +20,7 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
 	cpu->total_cycles += cpu->wait_cycles;
 
 	cpu->use_mmc1 = false;
-	
+
 	cpu->mmc1.shift_register = 0;
 	cpu->mmc1.shift_writes = 0;
 
@@ -29,7 +29,6 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
 
 void cpu_reset(nes_cpu_t *cpu)
 {
-	//cpu->pc = 0xc000;
 	cpu->pc = mem_read_16(cpu, RESET_VECTOR_ADDR);
 	printf("Starting PC at: 0x%04x\n", cpu->mem->data[RESET_VECTOR_ADDR]);
 }
