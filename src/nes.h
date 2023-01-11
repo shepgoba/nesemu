@@ -35,9 +35,6 @@ struct nes {
 	uint8_t *rom_data;
 	uint32_t *video_data;
 
-	bool use_mmc1;
-	mmc1_t mmc1;
-
 	nes_render_context_t *render_ctx;
 
 	uint8_t key_state;

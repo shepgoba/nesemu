@@ -18,8 +18,6 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 
 	nes->render_ctx = render_ctx;
 
-	nes->use_mmc1 = false;
-
 	nes->frames = 0;
 	nes->frame_start = 0;
 	nes->key_state = 0;
@@ -49,11 +47,11 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	if (nes->rom_info.mapper_id == 1) {
 		nes->cpu.use_mmc1 = true;
 		printf("setting mmc1 to true\n");
-		goto done;
 	}
 
+	uint32_t rom_size = nes->rom_info.rom_size;
 	bool copy_prg_rom_result = 
-		read_bytes(nes->memory.data + 0xc000, nes->rom_info.rom_size, 0x10, rom_handle);
+		read_bytes(nes->memory.data + 0xc000, rom_size, 0x10, rom_handle);
 		
 	if (!copy_prg_rom_result) {
 		printf("couldn't copy PRG ROM!\n");
@@ -64,7 +62,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	bool copy_chr_rom_result = read_bytes(
 		nes->vmemory.data, 
 		nes->rom_info.chr_size, 
-		0x10 + nes->rom_info.rom_size, 
+		0x10 + rom_size, 
 		rom_handle
 	);
 
@@ -74,14 +72,18 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		goto done;
 	}
 
-	nes->rom_data = malloc(nes->rom_info.rom_size);
+	nes->rom_data = malloc(rom_size);
 	if (!nes->rom_data) {
 		printf("couldn't allocate rom data\n");
 		code = false;
 		goto done;
 	}
 	
-	read_bytes(nes->rom_data, nes->rom_info.rom_size, 0x10, rom_handle);	
+	read_bytes(nes->rom_data, rom_size, 0x10, rom_handle);	
+
+	printf("ROM loaded successfully!\n");
+	printf("ROM size: %i bytes (%i KiB)\n", rom_size, rom_size / 1024);
+	printf("Using MMC1?: %s\n", nes->cpu.use_mmc1 ? "yes" : "no");
 	cpu_reset(&nes->cpu);
 
 done:

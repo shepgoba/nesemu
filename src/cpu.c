@@ -18,6 +18,9 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
 	cpu->wait_cycles = 7;
 	cpu->total_cycles = 0;
 	cpu->total_cycles += cpu->wait_cycles;
+
+	cpu->use_mmc1 = false;
+	
 	cpu->mmc1.shift_register = 0;
 	cpu->mmc1.shift_writes = 0;
 
@@ -28,7 +31,7 @@ void cpu_reset(nes_cpu_t *cpu)
 {
 	//cpu->pc = 0xc000;
 	cpu->pc = mem_read_16(cpu, RESET_VECTOR_ADDR);
-	printf("cpu->pc: %04x\n", cpu->mem->data[RESET_VECTOR_ADDR]);
+	printf("Starting PC at: 0x%04x\n", cpu->mem->data[RESET_VECTOR_ADDR]);
 }
  
 static void do_irq_interrupt(nes_cpu_t *cpu)
@@ -95,8 +98,8 @@ instr_addressing_mode get_addressing_mode(uint32_t opcode)
 
 void NONE(nes_cpu_t *cpu, uint32_t instr)
 {
-	printf("ILLEGAL INSTRUCTION @ %04x: %06x\n", cpu->pc, instr);
-	exit(0);
+	printf("ILLEGAL INSTRUCTION @ %04x: %06x\nAborting execution...\n", cpu->pc, instr);
+	exit(-1);
 }
 
 #ifdef CPU_IMPLEMENT_ILLEGAL_OPCODES

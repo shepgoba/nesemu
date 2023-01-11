@@ -18,6 +18,8 @@ int main(int argc, char **argv)
 		exit_with_error(2, "Usage: nesemu <rom path>");
 	}
 
+	printf("NESEMU v0.1\n");
+
 	SDL_SetMainReady();
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		exit_with_error(1, "Couldn't initialize SDL");
