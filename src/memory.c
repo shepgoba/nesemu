@@ -4,12 +4,11 @@
 
 bool memory_init(nes_memory_t *memory)
 {
-	memory->data = malloc(ADDRESS_SPACE_SIZE_6502);
+	memory->data = calloc(ADDRESS_SPACE_SIZE_6502, sizeof(uint8_t));
 	if (!memory->data) {
 		printf("error allocating memory!\n");
 		return false;
 	}
-	memset(memory->data, 0, ADDRESS_SPACE_SIZE_6502);
 
 	return true;
 }
@@ -22,12 +21,12 @@ void memory_cleanup(nes_memory_t *memory)
 
 bool vmemory_init(nes_vmemory_t *vmemory)
 {
-	vmemory->data = malloc(ADDRESS_SPACE_SIZE_2C02);
+	vmemory->data = calloc(ADDRESS_SPACE_SIZE_2C02, sizeof(uint8_t));
 	if (!vmemory->data) {
 		printf("error allocating video memory!\n");
 		return false;
 	}
-	memset(vmemory->data, 0, ADDRESS_SPACE_SIZE_2C02);
+
 	return true;
 }
 
