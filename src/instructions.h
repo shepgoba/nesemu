@@ -4,7 +4,7 @@
 #include "memory.h"
 #include <stdio.h>
 
-//#define CPU_ILLEGAL_OPCODES
+// #define CPU_ILLEGAL_OPCODES
 
 void oper_push_8(nes_cpu_t *cpu, uint8_t value);
 void oper_push_16(nes_cpu_t *cpu, uint16_t value);

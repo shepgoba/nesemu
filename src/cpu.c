@@ -23,9 +23,7 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
 
 	cpu->mmc1.shift_register = 0;
 	cpu->mmc1.shift_writes = 0;
-
 }
-
 
 void cpu_reset(nes_cpu_t *cpu)
 {

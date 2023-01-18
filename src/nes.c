@@ -4,7 +4,6 @@
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 {
-
 	if (!memory_init(&nes->memory)) {
 		printf("Could not allocate memory!\n");
 		return false;
@@ -19,12 +18,10 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 	cpu_init(&nes->cpu, &nes->memory, &nes->ppu);
 
 	nes->render_ctx = render_ctx;
-
 	nes->frames = 0;
 	nes->frame_start = 0;
 	nes->key_state = 0;
 	nes->master_clock_cycles = 0;
-
 	nes->rom_data = NULL;
 	nes->video_data = NULL;
 
@@ -48,7 +45,6 @@ bool nes_load_rom(nes_t *nes, const char *path)
 
 	if (nes->rom_info.mapper_id == 1) {
 		nes->cpu.use_mmc1 = true;
-		printf("setting mmc1 to true\n");
 	}
 
 	uint32_t rom_size = nes->rom_info.rom_size;
@@ -158,7 +154,6 @@ void nes_do_frame_cycle(nes_t *nes)
 	nes->frames++;
 }
 
-
 void nes_cleanup(nes_t *nes)
 {
 	free(nes->rom_data);
@@ -168,7 +163,6 @@ void nes_cleanup(nes_t *nes)
 	vmemory_cleanup(&nes->vmemory);
 	memory_cleanup(&nes->memory);
 }
-
 
 static void nes_delay(nes_t *nes, uint32_t time)
 {
@@ -191,7 +185,6 @@ void nes_delay_if_necessary(nes_t *nes)
 	}
 }
 
-
 void nes_dump_memory(nes_t *nes, const char *fname)
 {
 	FILE *dump = fopen(fname, "wb+");
@@ -201,7 +194,6 @@ void nes_dump_memory(nes_t *nes, const char *fname)
 	}
 
 	fwrite(nes->memory.data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_6502, dump);
-
 	fclose(dump);
 }
 

@@ -653,7 +653,6 @@ void instr_CMP_zpg(nes_cpu_t *cpu, uint32_t instr)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-
 void instr_CMP_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
@@ -1654,7 +1653,6 @@ void instr_STY_abs(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	__set_value_abs(cpu, addr, cpu->y);
 }
-
 
 void instr_STY_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
