@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <SDL2/SDL.h>
 
 void exit_with_error(int code, const char *message, ...)
 {

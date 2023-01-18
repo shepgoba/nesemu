@@ -1,4 +1,6 @@
 #include "nes.h"
+#include <SDL2/SDL.h>
+#define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 {
@@ -51,7 +53,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 
 	uint32_t rom_size = nes->rom_info.rom_size;
 	bool copy_prg_rom_result = 
-		read_bytes(nes->memory.data + 0xc000, rom_size, 0x10, rom_handle);
+		read_bytes(nes->memory.data + 0xc000, rom_size, INES_HEADER_SIZE, rom_handle);
 		
 	if (!copy_prg_rom_result) {
 		printf("couldn't copy PRG ROM!\n");
@@ -62,7 +64,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	bool copy_chr_rom_result = read_bytes(
 		nes->vmemory.data, 
 		nes->rom_info.chr_size, 
-		0x10 + rom_size, 
+		INES_HEADER_SIZE + rom_size, 
 		rom_handle
 	);
 
@@ -79,7 +81,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		goto done;
 	}
 	
-	read_bytes(nes->rom_data, rom_size, 0x10, rom_handle);	
+	read_bytes(nes->rom_data, rom_size, INES_HEADER_SIZE, rom_handle);	
 
 	printf("ROM loaded successfully!\n");
 	printf("ROM size: %i bytes (%i KiB)\n", rom_size, rom_size / 1024);

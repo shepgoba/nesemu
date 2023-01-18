@@ -6,7 +6,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "memory.h"
-#include <SDL2/SDL.h>
+
+union SDL_Event;
 
 typedef struct {
     uint32_t magic;
@@ -33,7 +34,7 @@ uint32_t bswap32(uint32_t);
 bool get_bit(uint8_t, int);
 bool read_bytes(void *, uint32_t, uint32_t, FILE *);
 bool get_rom_info(FILE *, ines_rom_header_t *, nes_rom_info_t *);
-void handle_keypress(SDL_Event *, uint8_t *);
+void handle_keypress(union SDL_Event *, uint8_t *);
 void exit_with_error(int, const char *, ...);
 
 #endif

@@ -534,7 +534,6 @@ void instr_BRK(nes_cpu_t *cpu, uint32_t instr)
 
 	// always set bit 5 in the SR copy, bit 4 if from an instruction
 	uint8_t copy = cpu_get_sr(cpu) | 0b00110000;
-	//printf("copy: %x\n", copy);
 	oper_push_8(cpu, copy);
 }
 
@@ -953,7 +952,7 @@ void instr_JMP_abs(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	cpu->pc = addr;
 
-	cpu->pc -= 3;
+	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_JMP_ind(nes_cpu_t *cpu, uint32_t instr)
@@ -962,18 +961,16 @@ void instr_JMP_ind(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t deref_addr = __get_value_ind(cpu, addr);
 	cpu->pc = deref_addr;
 
-	cpu->pc -= 3;
+	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_JSR(nes_cpu_t *cpu, uint32_t instr)
 {
 	oper_push_16(cpu, cpu->pc + 2);
-
 	uint16_t addr = __get_imm16_from_opcode(instr);
-
 	cpu->pc = addr;
 
-	cpu->pc -= 3;
+	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 
@@ -1015,7 +1012,7 @@ void instr_LDA_imm(nes_cpu_t *cpu, uint32_t instr)
 	uint8_t num = __get_imm8_from_opcode(instr);
 
 	cpu->a = num;
-	//printf("pc: %02x, num: %02x, cpu->a: %02x\n", cpu->pc, num, cpu->a);
+
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
@@ -1024,7 +1021,7 @@ void instr_LDA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_ind_y(cpu, addr, true);
-	//printf("addr = %04x\n", addr);
+
 	cpu->a = num;
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
@@ -1035,7 +1032,7 @@ void instr_LDA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_x_ind(cpu, addr);
-	//printf("num: %02x\n", num);
+
 	cpu->a = num;
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
@@ -1514,7 +1511,7 @@ void instr_RTI(nes_cpu_t *cpu, uint32_t instr)
 
 	cpu->pc = oper_pop_16(cpu);
 
-	cpu->pc--;
+	cpu->pc--; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_RTS(nes_cpu_t *cpu, uint32_t instr)

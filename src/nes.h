@@ -7,6 +7,10 @@
 #include "memory.h"
 #include "ppu.h"
 
+
+struct SDL_Renderer;
+struct SDL_Texture;
+
 #define SPEED_MODIFIER 1.0
 
 #define MILLISECONDS_PER_SECOND 1000.0
@@ -16,8 +20,8 @@
 #define MASTER_CLOCK_CYCLES_PER_FRAME 357366
 
 struct nes_render_context {
-	SDL_Renderer *renderer;
-	SDL_Texture *video_texture;
+	struct SDL_Renderer *renderer;
+	struct SDL_Texture *video_texture;
 };
 
 typedef struct nes_render_context nes_render_context_t;
