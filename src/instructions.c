@@ -371,7 +371,7 @@ void instr_AND_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	int num = __get_value_zpg_x(cpu, addr);
-	//printf("SR is %x\n", get_sr(cpu));
+
 	cpu->a &= num;
 
 	set_flag(cpu, FLAG_Z, cpu->a == 0);
