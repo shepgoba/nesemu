@@ -30,12 +30,10 @@ bool vmemory_init(nes_vmemory_t *vmemory)
 	return true;
 }
 
-
 void vmemory_cleanup(nes_vmemory_t *vmemory)
 {
 	free(vmemory->data);
 }
-
 
 static inline void set_bit(uint8_t *byte, int bit, int status)
 {
