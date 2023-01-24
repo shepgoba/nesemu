@@ -23,7 +23,7 @@ typedef struct {
 
 
 typedef struct {
-	int rom_size;
+	int prg_size;
 	int chr_size;
 	int mapper_id;
 	bool use_chr_ram;

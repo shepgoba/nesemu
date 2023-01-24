@@ -77,7 +77,7 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 	bool rom_is_valid = rom_magic_swapped == INES_ROM_MAGIC;
 
 	if (rom_is_valid) {
-		rom->rom_size = header->PRG_ROM_size * 16384;
+		rom->prg_size = header->PRG_ROM_size * 16384;
 		rom->chr_size = 0;
 		rom->use_chr_ram = false;
 

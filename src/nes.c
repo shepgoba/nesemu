@@ -28,6 +28,14 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 	return true;
 }
 
+static char *get_mapper_str(nes_t *nes)
+{
+	if (nes->cpu.use_mmc1)
+		return "MMC1";
+	
+	return "None";
+}
+
 bool nes_load_rom(nes_t *nes, const char *path) 
 {
 	bool code = true;
@@ -47,9 +55,9 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		nes->cpu.use_mmc1 = true;
 	}
 
-	uint32_t rom_size = nes->rom_info.rom_size;
+	uint32_t prg_rom_size = nes->rom_info.prg_size;
 	bool copy_prg_rom_result = 
-		read_bytes(nes->memory.data + 0xc000, rom_size, INES_HEADER_SIZE, rom_handle);
+		read_bytes(nes->memory.data + 0xc000, prg_rom_size, INES_HEADER_SIZE, rom_handle);
 		
 	if (!copy_prg_rom_result) {
 		printf("couldn't copy PRG ROM!\n");
@@ -60,7 +68,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	bool copy_chr_rom_result = read_bytes(
 		nes->vmemory.data, 
 		nes->rom_info.chr_size, 
-		INES_HEADER_SIZE + rom_size, 
+		INES_HEADER_SIZE + prg_rom_size, 
 		rom_handle
 	);
 
@@ -70,18 +78,19 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		goto done;
 	}
 
-	nes->rom_data = malloc(rom_size);
+	nes->rom_data = malloc(prg_rom_size);
 	if (!nes->rom_data) {
 		printf("couldn't allocate rom data\n");
 		code = false;
 		goto done;
 	}
 	
-	read_bytes(nes->rom_data, rom_size, INES_HEADER_SIZE, rom_handle);	
+	read_bytes(nes->rom_data, prg_rom_size, INES_HEADER_SIZE, rom_handle);	
 
 	printf("ROM loaded successfully!\n");
-	printf("ROM size: %i bytes (%i KiB)\n", rom_size, rom_size / 1024);
-	printf("Using MMC1?: %s\n", nes->cpu.use_mmc1 ? "yes" : "no");
+	printf("PRG ROM size: %i bytes (%i KiB)\n", prg_rom_size, prg_rom_size / 1024);
+	printf("CHR ROM size: %i bytes (%i KiB)\n", nes->rom_info.chr_size, nes->rom_info.chr_size / 1024);
+	printf("MMC mapper in use: %s\n", get_mapper_str(nes));
 	cpu_reset(&nes->cpu);
 
 done:

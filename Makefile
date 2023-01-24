@@ -1,4 +1,4 @@
-CC = clang
+CC = gcc
 
 SRC_DIR := src
 
@@ -7,7 +7,7 @@ SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CXXFLAGS := -O3
-LDFLAGS := -fuse-ld=lld
+LDFLAGS :=
 LIBS := -lSDL2 #-static  -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc -lsetupapi -lole32 -loleaut32 -lSDL2 
 
 
