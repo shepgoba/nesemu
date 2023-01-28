@@ -235,6 +235,88 @@ void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 	cpu->a = (uint8_t)result;
 }
 
+/*
+Generic implementations of many instructions
+*/
+
+void _instr_AND(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->a &= num;
+
+	set_flag(cpu, FLAG_Z, cpu->a == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+}
+
+void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
+{
+	uint8_t result = cpu->a - num;
+
+	set_flag(cpu, FLAG_C, cpu->a >= num);
+	set_flag(cpu, FLAG_Z, result == 0);
+	set_flag(cpu, FLAG_N, __is_negative(result));
+}
+
+void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
+{
+	uint8_t result = cpu->x - num;
+
+	set_flag(cpu, FLAG_C, cpu->x >= num);
+	set_flag(cpu, FLAG_Z, result == 0);
+	set_flag(cpu, FLAG_N, __is_negative(result));
+}
+
+void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
+{
+	uint8_t result = cpu->y - num;
+
+	set_flag(cpu, FLAG_C, cpu->y >= num);
+	set_flag(cpu, FLAG_Z, result == 0);
+	set_flag(cpu, FLAG_N, __is_negative(result));
+}
+
+void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->a ^= num;
+
+	set_flag(cpu, FLAG_Z, cpu->a == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+}
+
+void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->a = num;
+
+	set_flag(cpu, FLAG_Z, cpu->a == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+}
+
+void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->x = num;
+
+	set_flag(cpu, FLAG_Z, cpu->x == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+}
+
+void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->y = num;
+
+	set_flag(cpu, FLAG_Z, cpu->y == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+}
+
+void _instr_ORA(nes_cpu_t *cpu, uint8_t num)
+{
+	cpu->a |= num;
+
+	set_flag(cpu, FLAG_Z, cpu->a == 0);
+	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+}
+
+/*
+Generic instructions end
+*/
 
 void instr_ADC_abs(nes_cpu_t *cpu, uint32_t instr)
 {
@@ -295,87 +377,55 @@ void instr_AND_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	int num = __get_value_abs(cpu, addr);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	int num = __get_value_abs_x(cpu, addr, true);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	int num = __get_value_abs_y(cpu, addr, true);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t num = __get_imm8_from_opcode(instr);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	int num = __get_value_ind_y(cpu, addr, true);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	int num = __get_value_x_ind(cpu, addr);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	int num = __get_value_zpg(cpu, addr);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_AND_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	int num = __get_value_zpg_x(cpu, addr);
-
-	cpu->a &= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_AND(cpu, num);
 }
 
 void instr_ASL_A(nes_cpu_t *cpu, uint32_t instr)
@@ -491,7 +541,7 @@ void instr_BIT_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-	//printf("bit_zpg:\na:%02x\tnum:%02x\n", cpu->a, num);
+
 	set_flag(cpu, FLAG_Z, (cpu->a & num) == 0);
 	set_flag(cpu, FLAG_N, __is_negative(num));
 	set_flag(cpu, FLAG_V, __get_bit_8(num, 6));
@@ -515,8 +565,6 @@ void instr_BNE(nes_cpu_t *cpu, uint32_t instr)
 	}
 }
 
-//ours   01101111 6F
-//should 01101101 
 void instr_BPL(nes_cpu_t *cpu, uint32_t instr)
 {
 	bool flag = get_flag(cpu, FLAG_N);
@@ -580,152 +628,95 @@ void instr_CMP_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
-	uint8_t result = cpu->a - num;
-
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_y(cpu, addr, true);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t num = __get_imm8_from_opcode(instr);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_ind_y(cpu, addr, true);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_x_ind(cpu, addr);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CMP_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-	uint8_t result = cpu->a - num;
-	
-	set_flag(cpu, FLAG_C, cpu->a >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CMP(cpu, num);
 }
 
 void instr_CPX_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-	uint8_t result = cpu->x - num;
-	
-	set_flag(cpu, FLAG_C, cpu->x >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPX(cpu, num);
 }
 
 void instr_CPX_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t num = __get_imm8_from_opcode(instr);
-	uint8_t result = cpu->x - num;
-	
-	set_flag(cpu, FLAG_C, cpu->x >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPX(cpu, num);
 }
 
 void instr_CPX_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-	uint8_t result = cpu->x - num;
-	
-	set_flag(cpu, FLAG_C, cpu->x >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPX(cpu, num);
 }
 
 void instr_CPY_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-	uint8_t result = cpu->y - num;
-	
-	set_flag(cpu, FLAG_C, cpu->y >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPY(cpu, num);
 }
 
 void instr_CPY_imm(nes_cpu_t *cpu, uint32_t instr)
 {	
 	uint8_t num = __get_imm8_from_opcode(instr);
-	uint8_t result = cpu->y - num;
-	
-	set_flag(cpu, FLAG_C, cpu->y >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPY(cpu, num);
 }
 
 void instr_CPY_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-	uint8_t result = cpu->y - num;
-	
-	set_flag(cpu, FLAG_C, cpu->y >= num);
-	set_flag(cpu, FLAG_Z, result == 0);
-	set_flag(cpu, FLAG_N, __is_negative(result));
+	_instr_CPY(cpu, num);
 }
 
 void instr_DEC_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -798,86 +789,55 @@ void instr_EOR_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_y(cpu, addr, true);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t imm8 = __get_imm8_from_opcode(instr);
-	cpu->a ^= imm8;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, imm8);
 }
 
 void instr_EOR_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_ind_y(cpu, addr, true);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_x_ind(cpu, addr);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_EOR_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-
-	cpu->a ^= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_EOR(cpu, num);
 }
 
 void instr_INC_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -977,194 +937,123 @@ void instr_LDA_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_y(cpu, addr, true);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-	uint8_t num = __get_imm8_from_opcode(instr);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	uint8_t imm8 = __get_imm8_from_opcode(instr);
+	_instr_LDA(cpu, imm8);
 }
 
 void instr_LDA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_ind_y(cpu, addr, true);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_x_ind(cpu, addr);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-
-	cpu->a = num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_LDA(cpu, num);
 }
 
 void instr_LDX_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	cpu->x = num;
-
-	set_flag(cpu, FLAG_Z, cpu->x == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+	_instr_LDX(cpu, num);
 }
 
 void instr_LDX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_y(cpu, addr, true);
-
-	cpu->x = num;
-
-	set_flag(cpu, FLAG_Z, cpu->x == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+	_instr_LDX(cpu, num);
 }
 
 void instr_LDX_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t imm8 = __get_imm8_from_opcode(instr);
-	cpu->x = imm8;
-
-	set_flag(cpu, FLAG_Z, cpu->x == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+	_instr_LDX(cpu, imm8);
 }
 
 void instr_LDX_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-
-	cpu->x = num;
-
-	set_flag(cpu, FLAG_Z, cpu->x == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+	_instr_LDX(cpu, num);
 }
 
 void instr_LDX_zpg_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_y(cpu, addr);
-
-	cpu->x = num;
-
-	set_flag(cpu, FLAG_Z, cpu->x == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
+	_instr_LDX(cpu, num);
 }
 
 void instr_LDY_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	cpu->y = num;
-
-	set_flag(cpu, FLAG_Z, cpu->y == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+	_instr_LDY(cpu, num);
 }
 
 void instr_LDY_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
-
-	cpu->y = num;
-
-	set_flag(cpu, FLAG_Z, cpu->y == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+	_instr_LDY(cpu, num);
 }
 
 void instr_LDY_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t imm8 = __get_imm8_from_opcode(instr);
-
-	cpu->y = imm8;
-
-	set_flag(cpu, FLAG_Z, cpu->y == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+	_instr_LDY(cpu, imm8);
 }
 
 void instr_LDY_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-
-	cpu->y = num;
-
-	set_flag(cpu, FLAG_Z, cpu->y == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+	_instr_LDY(cpu, num);
 }
 
 void instr_LDY_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-
-	cpu->y = num;
-
-	set_flag(cpu, FLAG_Z, cpu->y == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
+	_instr_LDY(cpu, num);
 }
 
 void instr_LSR_A(nes_cpu_t *cpu, uint32_t instr)
@@ -1245,87 +1134,56 @@ void instr_ORA_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_ORA_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, true);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_ORA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_y(cpu, addr, true);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 
 void instr_ORA_imm(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t imm8 = __get_imm8_from_opcode(instr);
-	cpu->a |= imm8;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, imm8);
 }
 
 void instr_ORA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_ind_y(cpu, addr, true);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_ORA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_x_ind(cpu, addr);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_ORA_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_ORA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-
-	cpu->a |= num;
-
-	set_flag(cpu, FLAG_Z, cpu->a == 0);
-	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
+	_instr_ORA(cpu, num);
 }
 
 void instr_PHA(nes_cpu_t *cpu, uint32_t instr)
