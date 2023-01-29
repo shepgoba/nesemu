@@ -169,12 +169,13 @@ static inline uint8_t __get_value_zpg(nes_cpu_t *cpu, uint8_t address)
 
 static inline uint8_t __get_value_zpg_x(nes_cpu_t *cpu, uint8_t address)
 {
-
+	// relies on 8 bit overflow
 	return mem_read_8(cpu, (uint8_t)(address + cpu->x));
 }
 
 static inline uint8_t __get_value_zpg_y(nes_cpu_t *cpu, uint8_t address)
 {
+	// relies on 8 bit overflow
 	return mem_read_8(cpu, (uint8_t)(address + cpu->y));
 }
 
@@ -235,6 +236,9 @@ static inline uint8_t __get_bit_16(uint16_t word, int bit)
 	return (word >> bit) & 1;
 }
 
+/*
+Generic implementations of many instructions
+*/
 
 void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 {
@@ -248,10 +252,6 @@ void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_V, ((cpu->a ^ (uint8_t)result) & (num ^ (uint8_t)result) & 0x80) == 0x80);
 	cpu->a = (uint8_t)result;
 }
-
-/*
-Generic implementations of many instructions
-*/
 
 void _instr_AND(nes_cpu_t *cpu, uint8_t num)
 {
