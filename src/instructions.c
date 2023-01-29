@@ -1,14 +1,21 @@
 #include "cpu.h"
 #include "memory.h"
 #include "instructions.h"
+
 /*
 
 Common function name terminologies:
+__* = internal wrapper function around common small operations
+(eg, __has_page_overflow, __is_negative)
 
 oper_* = operation
+(eg. push, pop, branch)
 
-instr_* = instruction
-_instr_* = internal instruction implementation
+instr_* = instruction implementation used in opcode table
+(eg. ADC, AND)
+
+_instr_* = internal instruction implementation with shared code
+(eg. _instr_adc, _instr_and)
 
 iinstr_* = illegal instruction
 

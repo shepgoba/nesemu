@@ -3,3 +3,6 @@ obj/*
 
 build/*
 !build/.gitkeep
+
+debug/*
+!debug/.gitkeep
