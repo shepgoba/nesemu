@@ -1,8 +1,6 @@
 #ifndef MEMORY_INCLUDE
 #define MEMORY_INCLUDE
-#include <string.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
 
 #define ADDRESS_SPACE_SIZE_6502 0x10000

@@ -2,7 +2,6 @@
 #define INSTRUCTIONS_INCLUDE
 #include "cpu.h"
 #include "memory.h"
-#include <stdio.h>
 
 // #define CPU_ILLEGAL_OPCODES
 

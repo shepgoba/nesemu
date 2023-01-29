@@ -2,8 +2,6 @@
 #define CPU_INCLUDE
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include "utils.h"
 #include "memory.h"
 #include "ppu.h"

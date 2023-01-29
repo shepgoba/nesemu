@@ -1,7 +1,7 @@
 #ifndef PPU_INCLUDE
 #define PPU_INCLUDE
-#include "memory.h"
 #include <stdint.h>
+#include "memory.h"
 #include "utils.h"
 
 #define PPUCTRL_ADDR 0x2000

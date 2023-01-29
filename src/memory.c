@@ -1,6 +1,9 @@
 #include "memory.h"
 #include "cpu.h"
 #include "ppu.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 bool memory_init(nes_memory_t *memory)
 {

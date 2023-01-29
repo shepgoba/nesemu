@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "instructions.h"
 #include <assert.h>
+#include <stdlib.h>
 
 uint8_t mem_read_8(nes_cpu_t *, uint16_t);
 uint16_t mem_read_16(nes_cpu_t *, uint16_t);
