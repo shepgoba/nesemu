@@ -1,5 +1,7 @@
-#include "nes.h"
 #include <SDL2/SDL.h>
+#include <stdio.h>
+#include "nes.h"
+
 #define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)

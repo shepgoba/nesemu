@@ -1,6 +1,5 @@
 #ifndef NES_INCLUDE
 #define NES_INCLUDE
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "cpu.h"
