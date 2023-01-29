@@ -43,6 +43,11 @@ static inline void set_bit(uint8_t *byte, int bit, int status)
 	*byte ^= (-status ^ *byte) & (1UL << bit);
 }
 
+static inline uint8_t __get_bit_8(uint8_t byte, int bit) 
+{
+	return (byte >> bit) & 1;
+}
+
 void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	if (address >= 0x8000 && address <= 0xffff) {
@@ -88,11 +93,11 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				ppu->PPUCTRL = value;
 
 				ppu->nametable_base = 0x2000 + (value & 3) * 0x400;
-				ppu->sprites8x16 = get_bit(value, 5);
-				ppu->background_tiledata_base = get_bit(value, 4) ? 0x1000 : 0x0000;
-				ppu->sprite_tiledata_base = get_bit(value, 3) ? 0x1000 : 0x0000;
-				ppu->PPUADDR_increment_amount = get_bit(value, 2) ? 0x20 : 0x1;
-				ppu->NMI_output = get_bit(value, 7);
+				ppu->sprites8x16 = __get_bit_8(value, 5);
+				ppu->background_tiledata_base = __get_bit_8(value, 4) ? 0x1000 : 0x0000;
+				ppu->sprite_tiledata_base = __get_bit_8(value, 3) ? 0x1000 : 0x0000;
+				ppu->PPUADDR_increment_amount = __get_bit_8(value, 2) ? 0x20 : 0x1;
+				ppu->NMI_output = __get_bit_8(value, 7);
 				break;
 			}
 			case PPUMASK_ADDR: {
@@ -115,8 +120,8 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 
 				ppu->PPUMASK = value;
 
-				ppu->should_render_background = get_bit(value, 3);
-				ppu->should_render_sprites = get_bit(value, 4);
+				ppu->should_render_background = __get_bit_8(value, 3);
+				ppu->should_render_sprites = __get_bit_8(value, 4);
 
 				break;
 			}

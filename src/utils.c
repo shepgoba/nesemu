@@ -33,11 +33,6 @@ void handle_keypress(SDL_Event *event, uint8_t *key_state)
 	*key_state = temp_key_state;
 }
 
-bool get_bit(uint8_t value, int bit) 
-{
-	return (value >> bit) & 1;
-}
-
 bool read_bytes(void *addr, uint32_t num_bytes, uint32_t offset, FILE *file)
 {
 	int orig = ftell(file);
@@ -52,7 +47,7 @@ bool read_bytes(void *addr, uint32_t num_bytes, uint32_t offset, FILE *file)
 	return result == (sizeof(uint8_t) * num_bytes);
 }
 
-uint32_t bswap32(uint32_t x)
+static uint32_t bswap32(uint32_t x)
 {
 	return
 		((x << 24) & 0xff000000) |

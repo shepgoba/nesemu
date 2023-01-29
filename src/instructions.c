@@ -601,7 +601,10 @@ void instr_BRK(nes_cpu_t *cpu, uint32_t instr)
 
 	oper_push_16(cpu, cpu->pc);
 
-	// always set bit 5 in the SR copy, bit 4 if from an instruction
+	/*
+	always set bit 5 in the SR copy, 
+	bit 4 if from an instruction (which it is in this case)
+	*/
 	uint8_t copy = cpu_get_sr(cpu) | 0b00110000;
 	oper_push_8(cpu, copy);
 }
