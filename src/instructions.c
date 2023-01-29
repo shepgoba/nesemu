@@ -1,6 +1,19 @@
 #include "cpu.h"
 #include "memory.h"
 #include "instructions.h"
+/*
+
+Common function name terminologies:
+
+oper_* = operation
+
+instr_* = instruction
+_instr_* = internal instruction implementation
+
+iinstr_* = illegal instruction
+
+*/
+
 
 static inline bool __has_page_overflow(uint16_t addr, uint8_t change)
 {
@@ -18,12 +31,12 @@ static inline bool __is_negative(uint8_t num)
 
 static inline void oper_branch_offset(nes_cpu_t *cpu, int8_t offset)
 {
-	// TODO: check for page overflow
 	if (__has_page_overflow(cpu->pc, offset)) {
-
+		cpu->wait_cycles += 2;
+	} else {
+		cpu->wait_cycles++;
 	}
 	cpu->pc += offset;
-	cpu->wait_cycles++;
 }
 
 inline void set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
@@ -31,12 +44,10 @@ inline void set_flag(nes_cpu_t *cpu, uint8_t flag, int enable)
 	cpu->flags[flag] = enable;
 }
 
-
 inline bool get_flag(nes_cpu_t *cpu, int flag)
 {
 	return cpu->flags[flag];
 }
-
 
 void oper_push_16(nes_cpu_t *cpu, uint16_t value)
 {
@@ -71,7 +82,6 @@ static inline void __set_value_abs(nes_cpu_t *cpu, uint16_t address, uint8_t val
 	mem_write_8(cpu, address, value);
 }
 
-
 static inline void __set_value_abs_x(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	mem_write_8(cpu, address + cpu->x, value);
@@ -89,16 +99,19 @@ static inline void __set_value_zpg(nes_cpu_t *cpu, uint8_t address, uint8_t valu
 
 static inline void __set_value_zpg_x(nes_cpu_t *cpu, uint8_t address, uint8_t value)
 {
+	// relies on 8 bit overflow
 	mem_write_8(cpu, (uint8_t)(address + cpu->x), value);
 }
 
 static inline void __set_value_zpg_y(nes_cpu_t *cpu, uint8_t address, uint8_t value)
 {
+	// relies on 8 bit overflow
 	mem_write_8(cpu, (uint8_t)(address + cpu->y), value);
 }
 
 static inline void __set_value_ind_y(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
+	// relies on 8 bit overflow
 	uint8_t lo_addr = mem_read_8(cpu, (uint8_t)address);
 	uint8_t hi_addr = mem_read_8(cpu, (uint8_t)(address + 1));
 
@@ -109,6 +122,7 @@ static inline void __set_value_ind_y(nes_cpu_t *cpu, uint16_t address, uint8_t v
 
 static inline void __set_value_x_ind(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
+	// relies on 8 bit overflow
 	uint8_t lo_addr = mem_read_8(cpu, (uint8_t)(address + cpu->x));
 	uint8_t hi_addr = mem_read_8(cpu, (uint8_t)(address + cpu->x + 1));
 
@@ -131,7 +145,7 @@ static inline uint8_t __get_value_abs(nes_cpu_t *cpu, uint16_t address)
 static inline uint8_t __get_value_abs_x(nes_cpu_t *cpu, uint16_t address, bool add_cycle_if_page_crossed)
 {
 	if (add_cycle_if_page_crossed) {
-		if ((((address & 0xff) + cpu->x) & 0x100) == 0x100) {
+		if (__has_page_overflow(address, cpu->x)) {
 			cpu->wait_cycles++;
 		}
 	}
@@ -141,7 +155,7 @@ static inline uint8_t __get_value_abs_x(nes_cpu_t *cpu, uint16_t address, bool a
 static inline uint8_t __get_value_abs_y(nes_cpu_t *cpu, uint16_t address, bool add_cycle_if_page_crossed)
 {
 	if (add_cycle_if_page_crossed) {
-		if ((((address & 0xff) + cpu->y) & 0x100) == 0x100) {
+		if (__has_page_overflow(address, cpu->y)) {
 			cpu->wait_cycles++;
 		}
 	}
@@ -174,7 +188,7 @@ static inline uint8_t __get_value_ind_y(nes_cpu_t *cpu, uint8_t address, bool ad
 	uint16_t result = addr + cpu->y;
 
 	if (add_cycle_if_page_crossed) {
-		if ((((addr & 0xff) + cpu->y) & 0x100) == 0x100) {
+		if (__has_page_overflow(addr, cpu->y)) {
 			cpu->wait_cycles++;
 		}
 	}
