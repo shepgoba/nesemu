@@ -19,7 +19,9 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 	ppu_init(&nes->ppu, &nes->vmemory);
 	cpu_init(&nes->cpu, &nes->memory, &nes->ppu);
 
-	nes->render_ctx = render_ctx;
+	nes->render_ctx.renderer = render_ctx->renderer;
+	nes->render_ctx.video_texture = render_ctx->video_texture;
+
 	nes->frames = 0;
 	nes->frame_start = 0;
 	nes->key_state = 0;
@@ -144,7 +146,7 @@ static void nes_do_cpu_cycle(nes_t *nes)
 void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 {
 	if ((master_clock_frame % MASTER_CLOCKS_PER_PPU_CLOCK) == 0) {
-		nes_do_ppu_cycle(nes, nes->render_ctx);
+		nes_do_ppu_cycle(nes, &nes->render_ctx);
 	}
 
 	if ((master_clock_frame % MASTER_CLOCKS_PER_CPU_CLOCK) == 0) {
@@ -162,6 +164,7 @@ void nes_do_frame_cycle(nes_t *nes)
 		nes_do_master_cycle(nes, master_clock_frame);
 		nes->master_clock_cycles++;
 	}
+
 	nes->frames++;
 }
 
@@ -188,7 +191,7 @@ void nes_delay_if_necessary(nes_t *nes)
 	static const double TARGET_DELAY_TIME_MS = 
 		MILLISECONDS_PER_SECOND / (NES_FRAMES_PER_SECOND * SPEED_MODIFIER);
 	
-	uint32_t frametime = (double)(SDL_GetTicks() - nes->frame_start);
+	double frametime = (double)(SDL_GetTicks() - nes->frame_start);
 
 	if (TARGET_DELAY_TIME_MS > frametime) {
 		uint32_t time_delta = TARGET_DELAY_TIME_MS - frametime;
