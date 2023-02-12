@@ -75,6 +75,11 @@ static uint32_t bswap32(uint32_t x)
 		((x >> 24) & 0x000000ff);
 }
 
+static inline uint8_t __get_bit_8(uint8_t byte, int bit) 
+{
+	return (byte >> bit) & 1;
+}
+
 #define INES_ROM_MAGIC 0x4E45531A
 
 bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
@@ -103,11 +108,12 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 			rom->use_chr_ram = true;
 		}
 
-		rom->use_trainer = (header->flags6 & 0b00001000) >> 3;
+		rom->battery_backed_ram = __get_bit_8(header->flags6, 1);
+		rom->use_trainer = __get_bit_8(header->flags6, 3);
 		rom->mapper_id = (header->flags7 & 0xf0) | ((header->flags6 & 0xf0) >> 4);
 
 		if (rom->mapper_id != 0 && rom->mapper_id != 1) {
-			printf("unsupported mapper id! exiting...\n");
+			log_event("unsupported mapper id! exiting...\n");
 			return false;
 		}
 	}

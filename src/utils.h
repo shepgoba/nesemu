@@ -26,6 +26,7 @@ typedef struct {
 	int mapper_id;
 	bool use_chr_ram;
 	bool use_trainer;
+    bool battery_backed_ram;
 } nes_rom_info_t;
 
 bool read_bytes(void *, uint32_t, uint32_t, FILE *);
