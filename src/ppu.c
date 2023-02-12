@@ -75,12 +75,13 @@ static inline uint8_t __mirror_bits(uint8_t num)
 
 void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 {
-	uint8_t *bg_tiledata = ppu->vmem->data + ppu->background_tiledata_base_offset;
-	uint8_t *attributedata = ppu->vmem->data + ppu->nametable_base_offset + 0x3c0;
+	uint8_t *bg_tiledata_ptr = &ppu->vmem->data[ppu->background_tiledata_base_offset];
+	uint8_t *attributedata_ptr = &ppu->vmem->data[ppu->nametable_base_offset + 0x3c0];
+	uint8_t *tiledata_ptr = &ppu->vmem->data[ppu->nametable_base_offset];
 
 	for (int tile = 0; tile < HORIZONTAL_TILE_COUNT; tile++) {
 		int palette_offset = (ppu->scanline / 32) * 8 + tile / 4;
-		uint8_t palette_data = attributedata[palette_offset];
+		uint8_t palette_data = attributedata_ptr[palette_offset];
 
 		bool horizontal_odd = (tile / 2) & 1;
 		bool vertical_odd = (ppu->scanline / 16) & 1;
@@ -88,11 +89,12 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 		uint8_t specific_palette_data = palette_data >> (((vertical_odd << 1) | horizontal_odd) << 1) & 0b11;
 
 		int tile_index = (ppu->scanline / 8) * 32 + tile;
-		uint8_t tile_data_offset = (ppu->vmem->data + ppu->nametable_base_offset)[tile_index];
+
+		uint8_t tile_data_offset = tiledata_ptr[tile_index];
 		int offset = (tile_data_offset * 16) + (ppu->scanline % 8);
 		
-		uint8_t lo_bits = bg_tiledata[offset];
-		uint8_t hi_bits = bg_tiledata[offset + 8];
+		uint8_t lo_bits = bg_tiledata_ptr[offset];
+		uint8_t hi_bits = bg_tiledata_ptr[offset + 8];
 
 		for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 			uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 

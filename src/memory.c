@@ -159,7 +159,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case OAMDMA_ADDR: {
-				log_event("OAM DMA event. Copy source: 0x%04x", value * 0x100);
+				//log_event("OAM DMA event. Copy source: 0x%04x", value * 0x100);
 				memcpy(ppu->oam, &mem[value * 0x100], 0x100);
 				cpu->wait_cycles = 513;
 
