@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <time.h>
 #include "utils.h"
 
 void exit_with_error(int code, const char *message, ...)
@@ -8,10 +9,28 @@ void exit_with_error(int code, const char *message, ...)
 	va_list args;
     va_start(args, message);
 
-	printf(message, args);
+	vprintf(message, args);
 	va_end(args);
 	fputc('\n', stdout);
 	exit(code);
+}
+
+void log_event(const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	
+	time_t timer = time(NULL);
+	struct tm *tm_info = localtime(&timer);
+
+	char buffer[26];
+	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", tm_info);
+	printf("[%s] ", buffer);
+
+	vprintf(message, args);
+	va_end(args);
+
+	fputc('\n', stdout);
 }
 
 void handle_keypress(SDL_Event *event, uint8_t *key_state)
