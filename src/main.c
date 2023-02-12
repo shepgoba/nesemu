@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 					if (event.key.keysym.sym == SDLK_d) {
 						nes_dump_memory(&nes, "debug/mem.bin");
 						nes_dump_vmemory(&nes, "debug/vmem.bin");
-						log_event("Dumping RAM / VRAM. Exiting...\n");
+						log_event("Dumping RAM / VRAM. Exiting...");
 
 						goto main_cleanup;
 					} else {

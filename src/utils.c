@@ -113,7 +113,7 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 		rom->mapper_id = (header->flags7 & 0xf0) | ((header->flags6 & 0xf0) >> 4);
 
 		if (rom->mapper_id != 0 && rom->mapper_id != 1) {
-			log_event("unsupported mapper id! exiting...\n");
+			log_event("unsupported mapper id! exiting...");
 			return false;
 		}
 	}
