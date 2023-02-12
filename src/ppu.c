@@ -61,7 +61,7 @@ static inline uint8_t __get_bit_8(uint8_t byte, int bit)
 
 static inline uint8_t __mirror_bits(uint8_t num) 
 {
-	uint8_t pog = ((num & 0x01) << 7)
+	uint8_t val = ((num & 0x01) << 7)
 				| ((num & 0x02) << 5)
 				| ((num & 0x04) << 3)
 				| ((num & 0x08) << 1)
@@ -69,7 +69,7 @@ static inline uint8_t __mirror_bits(uint8_t num)
 				| ((num & 0x20) >> 3)
 				| ((num & 0x40) >> 5)
 				| ((num & 0x80) >> 7);
-	return pog;
+	return val;
 }
 
 
@@ -133,10 +133,13 @@ void ppu_draw_sprite_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 
 			uint8_t lo_bits = sprite_tiledata[slice_offset];
 			uint8_t hi_bits = sprite_tiledata[slice_offset + 8];
+
+			// flip horizontally
 			if (__get_bit_8(sprite_attributes, 6)) {
 				lo_bits = __mirror_bits(lo_bits);
 				hi_bits = __mirror_bits(hi_bits);
 			}
+
 			for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 				uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
 									  ((lo_bits >> (7 - pixel_x)) & 1);
