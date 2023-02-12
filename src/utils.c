@@ -39,7 +39,7 @@ bool read_bytes(void *addr, uint32_t num_bytes, uint32_t offset, FILE *file)
 
 	fseek(file, offset, SEEK_SET);
 
-	int result;
+	size_t result;
 	result = fread((uint8_t *)addr, sizeof(uint8_t), num_bytes, file);
 
 	fseek(file, orig, SEEK_SET);

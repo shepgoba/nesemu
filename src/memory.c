@@ -50,13 +50,15 @@ static inline uint8_t __get_bit_8(uint8_t byte, int bit)
 
 void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	if (address >= 0x8000 && address <= 0xffff) {
+	uint8_t *mem = cpu->mem->data;
+	// bank switching
+	if (address >= 0x8000) {
 		if (value & 0b10000000) {
 			cpu->mmc1.shift_register = 0;
 			cpu->mmc1.shift_writes = 0;
 		} else {
 			if (cpu->mmc1.shift_writes == 4) {
-				int bit = value & 1;
+				//int bit = value & 1;
 				//set_bit(&cpu->mmc1.shift_register, 3 - cpu->mmc1.shift_writes, bit);
 
 
@@ -76,6 +78,8 @@ void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				printf("pc:%04x, %i\n", cpu->pc, bit);
 			}
 		}
+	} else {
+		mem[address] = value;
 	}
 }
 
@@ -155,7 +159,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case OAMDMA_ADDR: {
-				//printf("writing 256 bytes to OAM DMA from %04x!\n", value * 0x100);
+				printf("OAM DMA event. Copy source: 0x%04x\n", value * 0x100);
 				memcpy(ppu->oam, &mem[value * 0x100], 0x100);
 				cpu->wait_cycles = 513;
 

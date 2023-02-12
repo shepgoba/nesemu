@@ -94,7 +94,7 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 
 		for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 			uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
-									(lo_bits >> (7 - pixel_x)) & 1;
+								  ((lo_bits >> (7 - pixel_x)) & 1);
 			
 			uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
 			uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
@@ -113,7 +113,7 @@ void ppu_draw_sprite_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 		uint8_t sprite_y = ppu->oam[oam_idx];
 
 		// 0xef to 0xff is off screen and will be invisible, so continue
-		if (sprite_y >= 0xef && sprite_y <= 0xff) {
+		if (sprite_y >= 0xef) {
 			continue;
 		}
 
@@ -135,7 +135,7 @@ void ppu_draw_sprite_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 			}
 			for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 				uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
-										(lo_bits >> (7 - pixel_x)) & 1;
+									  ((lo_bits >> (7 - pixel_x)) & 1);
 
 				if (pixel_data == 0)
 					continue;
