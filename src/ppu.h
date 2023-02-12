@@ -52,9 +52,9 @@ typedef struct {
 	bool sprites8x16;
 	bool sprite0hit;
 
-	int nametable_base;
-	int background_tiledata_base;
-	int sprite_tiledata_base;
+	int nametable_base_offset;
+	int background_tiledata_base_offset;
+	int sprite_tiledata_base_offset;
 
 	int PPUADDR_increment_amount;
 	
