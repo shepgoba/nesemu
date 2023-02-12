@@ -33,16 +33,21 @@ typedef struct __mmc1 {
 } mmc1_t;
 
 typedef struct __nes_cpu {
+	// Program counter
 	uint16_t pc;
 
+	// Registers
 	uint8_t a;
 	uint8_t x;
 	uint8_t y;
 	uint8_t sp;
 	uint8_t sr;
 
+	// Flags (pretty self explanatory)
 	uint8_t flags[CPU_NUM_FLAGS];
 
+	// Handles to other components
+	// TODO: Abstract this out into a bus probably
 	nes_memory_t *mem;
 	nes_ppu_t *ppu;
 
@@ -52,6 +57,8 @@ typedef struct __nes_cpu {
 	bool use_mmc1;
 	mmc1_t mmc1;
 	
+	// Input key state management
+	// TODO: Abstract this out into a separate component
 	uint8_t key_state;
 	bool strobe_keys;
 	int strobe_keys_write_no;
@@ -68,13 +75,4 @@ void cpu_cleanup(nes_cpu_t *cpu);
 
 uint8_t cpu_get_sr(nes_cpu_t *);
 void cpu_set_sr(nes_cpu_t *, uint8_t);
-
-uint8_t cpu_get_flag_c(nes_cpu_t *);
-uint8_t cpu_get_flag_z(nes_cpu_t *);
-uint8_t cpu_get_flag_i(nes_cpu_t *);
-uint8_t cpu_get_flag_d(nes_cpu_t *);
-uint8_t cpu_get_flag_b(nes_cpu_t *);
-uint8_t cpu_get_flag_v(nes_cpu_t *);
-uint8_t cpu_get_flag_n(nes_cpu_t *);
-
 #endif
