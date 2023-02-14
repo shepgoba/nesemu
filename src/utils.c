@@ -89,7 +89,7 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 
 	int result = read_bytes(header, sizeof(header), 0, handle);
 	if (!result) {
-		printf("Error getting rom header\n");
+		log_event("Error getting ROM header");
 		return false;
 	}
 
@@ -110,10 +110,14 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 
 		rom->battery_backed_ram = __get_bit_8(header->flags6, 1);
 		rom->use_trainer = __get_bit_8(header->flags6, 3);
-		rom->mapper_id = (header->flags7 & 0xf0) | ((header->flags6 & 0xf0) >> 4);
+		
+		uint8_t mapper_id_lo_nibble = header->flags6 >> 4;
+
+		// flag7 & 0xf0 is the high nibble of the mapper id
+		rom->mapper_id = (header->flags7 & 0xf0) | mapper_id_lo_nibble;
 
 		if (rom->mapper_id != 0 && rom->mapper_id != 1) {
-			log_event("unsupported mapper id! exiting...");
+			log_event("Unsupported ROM mapper ID! Exiting...");
 			return false;
 		}
 	}

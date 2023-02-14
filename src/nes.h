@@ -43,9 +43,9 @@ struct nes {
 	uint8_t key_state;
 
 	uint32_t frame_start;
+	uint64_t frames;
 
 	uint64_t master_clock_cycles;
-	uint64_t frames;
 };
 
 typedef struct nes nes_t;

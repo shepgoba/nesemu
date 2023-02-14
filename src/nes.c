@@ -1,34 +1,37 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include "nes.h"
-
+#include "utils.h"
 #define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 {
 	if (!memory_init(&nes->memory)) {
-		printf("Could not allocate memory!\n");
+		log_event("Could not allocate memory!");
 		return false;
 	}
 
 	if (!vmemory_init(&nes->vmemory)) {
-		printf("Could not allocate vmemory!\n");
+		log_event("Could not allocate vmemory!");
 		return false;
 	}
 
 	ppu_init(&nes->ppu, &nes->vmemory);
 	cpu_init(&nes->cpu, &nes->memory, &nes->ppu);
 
-	nes->render_ctx.renderer = render_ctx->renderer;
-	nes->render_ctx.video_texture = render_ctx->video_texture;
-
-	nes->frames = 0;
-	nes->frame_start = 0;
-	nes->key_state = 0;
-	nes->master_clock_cycles = 0;
 	nes->rom_data = NULL;
 	nes->video_data = NULL;
 
+	nes->render_ctx.renderer = render_ctx->renderer;
+	nes->render_ctx.video_texture = render_ctx->video_texture;
+
+	nes->key_state = 0;
+
+	nes->frame_start = 0;
+	nes->frames = 0;
+
+	nes->master_clock_cycles = 0;
+	
 	return true;
 }
 
@@ -64,7 +67,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		read_bytes(nes->memory.data + 0xc000, prg_rom_size, INES_HEADER_SIZE, rom_handle);
 		
 	if (!copy_prg_rom_result) {
-		printf("couldn't copy PRG ROM!\n");
+		log_event("couldn't copy PRG ROM!\n");
 		code = false;
 		goto done;
 	}
@@ -77,14 +80,14 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	);
 
 	if (!copy_chr_rom_result) {
-		printf("couldn't copy CHR ROM!\n");
+		log_event("couldn't copy CHR ROM!");
 		code = false;
 		goto done;
 	}
 
 	nes->rom_data = malloc(prg_rom_size);
 	if (!nes->rom_data) {
-		printf("couldn't allocate rom data\n");
+		log_event("couldn't allocate rom data");
 		code = false;
 		goto done;
 	}
@@ -203,7 +206,7 @@ void nes_dump_memory(nes_t *nes, const char *fname)
 {
 	FILE *dump = fopen(fname, "wb+");
 	if (!dump) {
-		printf("couldn't open memory dump file!\n");
+		log_event("couldn't open memory dump file");
 		return;
 	}
 
@@ -215,7 +218,7 @@ void nes_dump_vmemory(nes_t *nes, const char *fname)
 {
 	FILE *dump = fopen(fname, "wb+");
 	if (!dump) {
-		printf("couldn't open vmemory dump file!\n");
+		log_event("couldn't open vmemory dump file!");
 		return;
 	}
 

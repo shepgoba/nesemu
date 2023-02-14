@@ -29,8 +29,10 @@
 
 
 typedef struct {
+	// Internal vram handle
 	nes_vmemory_t *vmem;
 
+	// Registers
 	uint8_t PPUCTRL;
 	uint8_t PPUMASK;
 	uint8_t PPUSTATUS;
@@ -40,8 +42,10 @@ typedef struct {
 	uint16_t PPUADDR;
 	uint8_t PPUDATA;
 
+	// OAM memory
 	uint8_t oam[256];
 
+	// State variables
 	bool NMI_output;
 	bool NMI_occurred;
 	bool in_vblank;
@@ -56,6 +60,7 @@ typedef struct {
 	int background_tiledata_base_offset;
 	int sprite_tiledata_base_offset;
 
+	// Either 1 or 32
 	int PPUADDR_increment_amount;
 	
 	int dot_clock_scanline;
