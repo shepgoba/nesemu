@@ -154,7 +154,8 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case PPUDATA_ADDR: {
-				ppu->vmem->data[ppu->PPUADDR] = value;
+				uint16_t addr = ppu->PPUADDR;
+				ppu->vmem->data[addr & 0x3fff] = value;
 				ppu->PPUADDR += ppu->PPUADDR_increment_amount;
 				break;
 			}
