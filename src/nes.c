@@ -222,6 +222,6 @@ void nes_dump_vmemory(nes_t *nes, const char *fname)
 		return;
 	}
 
-	fwrite(nes->memory.data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_2C02, dump);
+	fwrite(nes->vmemory.data, sizeof(uint8_t), ADDRESS_SPACE_SIZE_2C02, dump);
 	fclose(dump);
 }

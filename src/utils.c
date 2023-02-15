@@ -54,7 +54,7 @@ void handle_keypress(SDL_Event *event, uint8_t *key_state)
 
 bool read_bytes(void *addr, uint32_t num_bytes, uint32_t offset, FILE *file)
 {
-	int orig = ftell(file);
+	long int orig = ftell(file);
 
 	fseek(file, offset, SEEK_SET);
 
