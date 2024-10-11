@@ -246,8 +246,8 @@ static inline uint8_t __get_bit_16(uint16_t word, int bit)
 /*
 Generic implementations of many instructions
 */
-
-static inline void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 {
 	int c_flag = get_flag(cpu, FLAG_C);
 
@@ -260,7 +260,8 @@ static inline void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 	cpu->a = (uint8_t)result;
 }
 
-static inline void _instr_AND(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_AND(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a &= num;
 
@@ -268,7 +269,8 @@ static inline void _instr_AND(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-static inline void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->a - num;
 
@@ -277,7 +279,8 @@ static inline void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-static inline void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->x - num;
 
@@ -286,7 +289,8 @@ static inline void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-static inline void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->y - num;
 
@@ -295,7 +299,8 @@ static inline void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-static inline void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a ^= num;
 
@@ -303,7 +308,8 @@ static inline void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-static inline void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a = num;
 
@@ -311,7 +317,8 @@ static inline void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-static inline void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->x = num;
 
@@ -319,7 +326,8 @@ static inline void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
 }
 
-static inline void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->y = num;
 
@@ -327,7 +335,8 @@ static inline void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
 }
 
-static inline void _instr_ORA(nes_cpu_t *cpu, uint8_t num)
+__attribute__((noinline))
+void _instr_ORA(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a |= num;
 
