@@ -3,8 +3,6 @@
 #include "cpu.h"
 #include "memory.h"
 
-// #define CPU_ILLEGAL_OPCODES
-
 void oper_push_8(nes_cpu_t *cpu, uint8_t value);
 void oper_push_16(nes_cpu_t *cpu, uint16_t value);
 
@@ -166,7 +164,7 @@ void instr_TXA(nes_cpu_t *cpu, uint32_t instr);
 void instr_TXS(nes_cpu_t *cpu, uint32_t instr);
 void instr_TYA(nes_cpu_t *cpu, uint32_t instr);
 
-#ifdef CPU_ILLEGAL_OPCODES
+#ifdef CPU_IMPLEMENT_ILLEGAL_OPCODES
 // illegal/undefined instructions
 void iinstr_AHX_abs_y(nes_cpu_t *, uint32_t);
 void iinstr_AHX_ind_y(nes_cpu_t *, uint32_t);

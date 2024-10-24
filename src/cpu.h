@@ -6,7 +6,7 @@
 #include "memory.h"
 #include "ppu.h"
 
-//#define CPU_IMPLEMENT_ILLEGAL_OPCODES
+#define CPU_IMPLEMENT_ILLEGAL_OPCODES
 
 #define NMI_INTERRUPT_VECTOR_ADDR 0xFFFA
 #define RESET_VECTOR_ADDR 0xFFFC

@@ -1598,7 +1598,7 @@ void instr_TYA(nes_cpu_t *cpu, uint32_t instr)
 }
 
 
-#ifdef CPU_ILLEGAL_OPCODES
+#ifdef CPU_IMPLEMENT_ILLEGAL_OPCODES
 //illegal opcodes
 void iinstr_AHX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
