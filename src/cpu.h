@@ -27,10 +27,7 @@
 #define CPU_NUM_FLAGS 8
 
 
-typedef struct __mmc1 {
-	int shift_register;
-	int shift_writes;
-} mmc1_t;
+typedef uint8_t mmc_type_t;
 
 typedef struct __nes_cpu {
 	// Program counter
@@ -54,8 +51,7 @@ typedef struct __nes_cpu {
 	uint32_t wait_cycles;
 	uint32_t total_cycles;
 
-	bool use_mmc1;
-	mmc1_t mmc1;
+	mmc_type_t mmc_type;
 	
 	// Input key state management
 	// TODO: Abstract this out into a separate component

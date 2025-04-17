@@ -35,14 +35,6 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 	return true;
 }
 
-static char *get_mapper_str(nes_t *nes)
-{
-	if (nes->cpu.use_mmc1)
-		return "MMC1";
-	
-	return "None";
-}
-
 bool nes_load_rom(nes_t *nes, const char *path) 
 {
 	bool code = true;
@@ -57,14 +49,18 @@ bool nes_load_rom(nes_t *nes, const char *path)
 		code = false;
 		goto done;
 	}
+	uint32_t prg_rom_size = nes->rom_info.prg_size;
 
-	if (nes->rom_info.mapper_id == 1) {
-		nes->cpu.use_mmc1 = true;
+	bool copy_prg_rom_result;
+	if (nes->rom_info.mapper_id == 0) {
+		copy_prg_rom_result = read_bytes(nes->memory.data + 0x10000 - prg_rom_size, prg_rom_size, INES_HEADER_SIZE, rom_handle);
+	} else if (nes->rom_info.mapper_id == 1) {
+		copy_prg_rom_result = read_bytes(nes->memory.data + 0x8000, prg_rom_size, INES_HEADER_SIZE, rom_handle);
+	} else {
+		copy_prg_rom_result = false;
 	}
 
-	uint32_t prg_rom_size = nes->rom_info.prg_size;
-	bool copy_prg_rom_result = 
-		read_bytes(nes->memory.data + 0xc000, prg_rom_size, INES_HEADER_SIZE, rom_handle);
+	nes->cpu.mmc_type = nes->rom_info.mapper_id;
 		
 	if (!copy_prg_rom_result) {
 		log_event("couldn't copy PRG ROM!\n");
@@ -97,7 +93,7 @@ bool nes_load_rom(nes_t *nes, const char *path)
 	printf("ROM loaded successfully!\n");
 	printf("PRG ROM size: %i bytes (%i KiB)\n", prg_rom_size, prg_rom_size / 1024);
 	printf("CHR ROM size: %i bytes (%i KiB)\n", nes->rom_info.chr_size, nes->rom_info.chr_size / 1024);
-	printf("MMC mapper in use: %s\n", get_mapper_str(nes));
+	printf("MMC mapper in use: %i\n", nes->rom_info.mapper_id);
 	cpu_reset(&nes->cpu);
 
 done:

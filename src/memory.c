@@ -50,7 +50,7 @@ static inline uint8_t __get_bit_8(uint8_t byte, int bit)
 
 void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
-	uint8_t *mem = cpu->mem->data;
+	/*uint8_t *mem = cpu->mem->data;
 	// bank switching
 	if (address >= 0x8000) {
 		if (value & 0b10000000) {
@@ -80,8 +80,9 @@ void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 		}
 	} else {
 		mem[address] = value;
-	}
+	}*/
 }
+
 
 __attribute__((noinline))
 void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
@@ -89,7 +90,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 	uint8_t *mem = cpu->mem->data;
 	nes_ppu_t *ppu = cpu->ppu;
 
-	if (cpu->use_mmc1) {
+	if (cpu->mmc_type == 1) {
 		mem_write_8_mmc1(cpu, address, value);
 	} else {
 		switch (address) {
@@ -138,7 +139,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case OAMDATA_ADDR: {
-				printf("we are writing to OAMDATA!\n");
+				//printf("we are writing to OAMDATA!\n");
 				ppu->oam[ppu->OAMADDR] = value;
 				ppu->OAMADDR++;
 				break;
@@ -202,9 +203,9 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 			break;
 		}
 		case PPUSTATUS_ADDR: {
-			uint8_t copy = (ppu->PPUSTATUS & 0b01111111) | (ppu->NMI_occurred << 7) | (ppu->sprite0hit << 6);
+			uint8_t copy = (ppu->PPUSTATUS & 0b01111111) | (ppu->in_vblank << 7) | (ppu->sprite0hit << 6);
 
-			ppu->NMI_occurred = false;
+			ppu->in_vblank = false;
 
 			return copy;
 			break;

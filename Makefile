@@ -13,17 +13,17 @@ LIBS := -lSDL2 #-static  -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinm
 
 ROM_FILE = roms\donkeykong.nes
 
-build\nesemu.exe: $(OBJ_FILES)
+nesemu: $(OBJ_FILES)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 
-run: build\nesemu.exe
-	.\build\nesemu.exe $(ROM_FILE)
+run: nesemu
+	./nesemu $(ROM_FILE)
 
-do: build\nesemu.exe run
+do: nesemu run
 
 clean:
 	@rm -rf obj/*.o

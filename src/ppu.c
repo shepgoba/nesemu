@@ -38,7 +38,6 @@ void ppu_update_registers(nes_ppu_t *ppu, bool *should_update_frame, uint32_t *v
 		if (ppu->dot_clock_scanline == 0) {
 			ppu->NMI_occurred = false;
 			ppu->in_vblank = false;
-
 			*should_update_frame = true;
 		} else if (ppu->dot_clock_scanline == 1) {
 			ppu->PPUSTATUS &= 0b01111111;

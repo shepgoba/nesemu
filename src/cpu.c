@@ -19,11 +19,6 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
 	cpu->wait_cycles = 7;
 	cpu->total_cycles = 0;
 	cpu->total_cycles += cpu->wait_cycles;
-
-	cpu->use_mmc1 = false;
-
-	cpu->mmc1.shift_register = 0;
-	cpu->mmc1.shift_writes = 0;
 }
 
 void cpu_reset(nes_cpu_t *cpu)
@@ -44,8 +39,6 @@ static void do_irq_interrupt(nes_cpu_t *cpu)
 
 static void do_nmi_interrupt(nes_cpu_t *cpu)
 {
-	//printf("taking NMI interrupt\n");
-
 	oper_push_16(cpu, cpu->pc);
 	oper_push_8(cpu, cpu_get_sr(cpu));
 	cpu->pc = mem_read_16(cpu, NMI_INTERRUPT_VECTOR_ADDR);
@@ -60,7 +53,7 @@ void cpu_check_interrupts(nes_cpu_t *cpu)
 	}
 
 	// NMI interrupt
-	if (cpu->ppu->NMI_occurred && cpu->ppu->NMI_output) {
+	if (cpu->ppu->in_vblank && cpu->ppu->NMI_output) {
 		do_nmi_interrupt(cpu);
 	}
 }
