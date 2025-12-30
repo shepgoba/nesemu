@@ -3,11 +3,11 @@
 #include "instructions.h"
 
 #if defined(__GNUC__) || defined(__clang__)
-#define NOINLINE __attribute__((noinline))
+	#define NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
-#define NOINLINE __declspec(noinline)
+	#define NOINLINE __declspec(noinline)
 #else
-#define NOINLINE
+	#define NOINLINE
 #endif
 
 /*

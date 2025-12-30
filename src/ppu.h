@@ -38,7 +38,8 @@ typedef struct {
 	uint8_t PPUSTATUS;
 	uint8_t OAMADDR;
 	uint8_t OAMDATA;
-	uint8_t PPUSCROLL;
+	uint8_t PPUSCROLLX;
+	uint8_t PPUSCROLLY;
 	uint16_t PPUADDR;
 	uint8_t PPUDATA;
 
@@ -49,7 +50,7 @@ typedef struct {
 	bool NMI_output;
 	bool in_vblank;
 	bool triggered_NMI;
-	bool PPUADDR_2nd_write;
+	bool W_toggle;
 
 	bool should_render_background;
 	bool should_render_sprites;

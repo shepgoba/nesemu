@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if defined(__GNUC__) || defined(__clang__)
+	#define NOINLINE __attribute__((noinline))
+#elif defined(_MSC_VER)
+	#define NOINLINE __declspec(noinline)
+#else
+	#define NOINLINE
+#endif
+
 bool memory_init(nes_memory_t *memory)
 {
 	memory->data = calloc(ADDRESS_SPACE_SIZE_6502, sizeof(uint8_t));
@@ -84,7 +92,7 @@ void mem_write_8_mmc1(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 }
 
 
-__attribute__((noinline))
+NOINLINE
 void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	uint8_t *mem = cpu->mem->data;
@@ -135,30 +143,45 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 
 				break;
 			}
+			case PPUSCROLL_ADDR: {
+				if (ppu->W_toggle) {
+					ppu->PPUSCROLLY = value;
+				} else {
+					ppu->PPUSCROLLX = value;
+				}			
+				ppu->W_toggle = !ppu->W_toggle;
+				break;
+			}
 			case OAMADDR_ADDR: {
 				ppu->OAMADDR = value;
 				break;
 			}
 			case OAMDATA_ADDR: {
-				//printf("we are writing to OAMDATA!\n");
 				ppu->oam[ppu->OAMADDR] = value;
 				ppu->OAMADDR++;
 				break;
 			}
 			case PPUADDR_ADDR: {
-				if (ppu->PPUADDR_2nd_write) {
+				if (ppu->W_toggle) {
 					ppu->PPUADDR |= value;
 				} else {
 					ppu->PPUADDR = (value << 8);
 				}			
-				ppu->PPUADDR_2nd_write = !ppu->PPUADDR_2nd_write;
+				ppu->W_toggle = !ppu->W_toggle;
 				//printf("ppuaddr: %04x\n", ppu->PPUADDR);
 				break;
 			}
 			case PPUDATA_ADDR: {
-				uint16_t addr = ppu->PPUADDR;
-				ppu->vmem->data[addr & 0x3fff] = value;
+				uint16_t addr = ppu->PPUADDR & 0x3fff;
 				ppu->PPUADDR += ppu->PPUADDR_increment_amount;
+				if (addr >> 8 == 0x3f) {
+					addr &= 0x3f1f;
+					if ((addr & 0x13) == 0x10) {
+						addr &= 0x3fef;
+					}
+				}
+		
+				ppu->vmem->data[addr] = value;
 				break;
 			}
 			case OAMDMA_ADDR: {
@@ -189,7 +212,7 @@ void mem_write_16(nes_cpu_t *cpu, uint16_t address, uint16_t value)
    	mem_write_8(cpu, address + 1, (value & 0xff00) >> 8);
 }
 
-__attribute__((noinline))
+NOINLINE
 uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 {
 
@@ -211,6 +234,18 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 			ppu->in_vblank = false;
 
 			return copy;
+			break;
+		}
+		case PPUDATA_ADDR: {
+			uint16_t addr = ppu->PPUADDR & 0x3fff;
+			ppu->PPUADDR += ppu->PPUADDR_increment_amount;
+			if (addr >> 8 == 0x3f) {
+				addr &= 0x3f1f;
+				if ((addr & 0x13) == 0x10) {
+					addr &= 0x3fef;
+				}
+			}
+			return ppu->vmem->data[addr];
 			break;
 		}
 		case OAMADDR_ADDR: {

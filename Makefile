@@ -11,7 +11,7 @@ LDFLAGS :=
 LIBS := -lSDL2
 
 
-ROM_FILE = roms\cputest.nes
+ROM_FILE = roms\mario.nes
 
 nesemu: $(OBJ_FILES)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)

@@ -48,9 +48,9 @@ int main(int argc, char **argv)
 
 	SDL_Texture *video_texture = SDL_CreateTexture(
 		renderer,
-		SDL_PIXELFORMAT_ARGB8888, 
-		SDL_TEXTUREACCESS_STREAMING, 
-		INTERNAL_VIDEO_WIDTH, 
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		INTERNAL_VIDEO_WIDTH,
 		INTERNAL_VIDEO_HEIGHT
 	);
 	if (!video_texture) {

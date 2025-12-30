@@ -9,7 +9,7 @@ void ppu_init(nes_ppu_t *ppu, nes_vmemory_t *vmem)
 	ppu->dot_clock_scanline = 0;
 	ppu->scanline = 0;
 	ppu->NMI_output = false;
-	ppu->PPUADDR_2nd_write = false;
+	ppu->W_toggle = false;
 	ppu->nametable_base_offset = 0;
 	ppu->background_tiledata_base_offset = 0;
 	ppu->sprite_tiledata_base_offset = 0;
@@ -85,7 +85,6 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 		bool vertical_odd = (ppu->scanline / 16) & 1;
 
 		uint8_t specific_palette_data = palette_data >> (((vertical_odd << 1) | horizontal_odd) << 1) & 0b11;
-
 		int tile_index = (ppu->scanline / 8) * 32 + cur_tile_idx;
 
 		uint8_t tile_data_offset = tiledata_ptr[tile_index];
@@ -97,9 +96,9 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 		for (int pixel_x = 0; pixel_x < 8; pixel_x++) {
 			uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
 								  ((lo_bits >> (7 - pixel_x)) & 1);
-			
-			uint8_t *sprite_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
-			uint32_t final_color = 0xff000000 | ntsc_rgb_table[sprite_palette_addr[pixel_data]];
+
+			uint8_t *bg_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
+			uint32_t final_color = 0xff000000 | ntsc_rgb_table[bg_palette_addr[pixel_data]];
 
 			uint16_t pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + cur_tile_idx * 0x8 + pixel_x;
 			video_data[pixel_addr] = final_color;
