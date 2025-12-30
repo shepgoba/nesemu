@@ -1,12 +1,14 @@
 #include "ppu.h"
+#include <string.h>
 
 void ppu_init(nes_ppu_t *ppu, nes_vmemory_t *vmem) 
 {
+	memset(ppu, 0, sizeof(*ppu));
+
 	ppu->vmem = vmem;
 	ppu->dot_clock_scanline = 0;
 	ppu->scanline = 0;
 	ppu->NMI_output = false;
-	ppu->NMI_occurred = false;
 	ppu->PPUADDR_2nd_write = false;
 	ppu->nametable_base_offset = 0;
 	ppu->background_tiledata_base_offset = 0;
@@ -16,11 +18,6 @@ void ppu_init(nes_ppu_t *ppu, nes_vmemory_t *vmem)
 
 void ppu_update_registers(nes_ppu_t *ppu, bool *should_update_frame, uint32_t *video_data)
 {
-	if (ppu->dot_clock_scanline == 341) {
-		ppu->scanline++;
-		ppu->dot_clock_scanline = 0;
-	}
-
 	if (ppu->scanline < 240) {
 		// normal operation
 		if (ppu->dot_clock_scanline == 340)
@@ -28,22 +25,23 @@ void ppu_update_registers(nes_ppu_t *ppu, bool *should_update_frame, uint32_t *v
 	} else if (ppu->scanline == 241) {
 		// start of vblank
 		if (ppu->dot_clock_scanline == 1) {
-			ppu->PPUSTATUS |= 0b01111111;
-			ppu->NMI_occurred = true;
 			ppu->in_vblank = true;
+			ppu->triggered_NMI = false;
 		}
 	} else if (ppu->scanline == 262) {
 		// end of vblank
 		ppu->scanline = 0;
-		if (ppu->dot_clock_scanline == 0) {
-			ppu->NMI_occurred = false;
+		if (ppu->dot_clock_scanline == 1) {
+			ppu->sprite0hit = false;
 			ppu->in_vblank = false;
 			*should_update_frame = true;
-		} else if (ppu->dot_clock_scanline == 1) {
-			ppu->PPUSTATUS &= 0b01111111;
-			ppu->sprite0hit = false;
 		}
 	}
+	if (ppu->dot_clock_scanline == 341) {
+		ppu->scanline++;
+		ppu->dot_clock_scanline = 0;
+	}
+
 }
 
 // Stored in RGB 8-bit format (0xRRGGBB)

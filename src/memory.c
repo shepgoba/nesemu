@@ -103,6 +103,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				ppu->sprite_tiledata_base_offset = __get_bit_8(value, 3) ? 0x1000 : 0x0000;
 				ppu->PPUADDR_increment_amount = __get_bit_8(value, 2) ? 0x20 : 0x1;
 				ppu->NMI_output = __get_bit_8(value, 7);
+				ppu->triggered_NMI = !ppu->NMI_output;
 				break;
 			}
 			case PPUMASK_ADDR: {
@@ -203,7 +204,9 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 			break;
 		}
 		case PPUSTATUS_ADDR: {
-			uint8_t copy = (ppu->PPUSTATUS & 0b01111111) | (ppu->in_vblank << 7) | (ppu->sprite0hit << 6);
+			uint8_t copy = (ppu->PPUSTATUS & 0b00111111) 
+				| ((uint8_t)ppu->in_vblank << 7) 
+				| ((uint8_t)ppu->sprite0hit << 6);
 
 			ppu->in_vblank = false;
 

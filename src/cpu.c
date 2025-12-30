@@ -29,8 +29,6 @@ void cpu_reset(nes_cpu_t *cpu)
  
 static void do_irq_interrupt(nes_cpu_t *cpu)
 {
-	//printf("taking IRQ interrupt\n");
-
 	oper_push_16(cpu, cpu->pc);
 	oper_push_8(cpu, cpu_get_sr(cpu));
 	cpu->pc = mem_read_16(cpu, IRQ_INTERRUPT_VECTOR_ADDR);
@@ -39,10 +37,11 @@ static void do_irq_interrupt(nes_cpu_t *cpu)
 
 static void do_nmi_interrupt(nes_cpu_t *cpu)
 {
+	cpu->wait_cycles += 7;
 	oper_push_16(cpu, cpu->pc);
 	oper_push_8(cpu, cpu_get_sr(cpu));
 	cpu->pc = mem_read_16(cpu, NMI_INTERRUPT_VECTOR_ADDR);
-	cpu->ppu->NMI_output = false;
+	cpu->ppu->triggered_NMI = true;
 }
 
 void cpu_check_interrupts(nes_cpu_t *cpu)
@@ -53,7 +52,7 @@ void cpu_check_interrupts(nes_cpu_t *cpu)
 	}
 
 	// NMI interrupt
-	if (cpu->ppu->in_vblank && cpu->ppu->NMI_output) {
+	if (cpu->ppu->in_vblank && cpu->ppu->NMI_output && !cpu->ppu->triggered_NMI) {
 		do_nmi_interrupt(cpu);
 	}
 }

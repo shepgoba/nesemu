@@ -47,8 +47,8 @@ typedef struct {
 
 	// State variables
 	bool NMI_output;
-	bool NMI_occurred;
 	bool in_vblank;
+	bool triggered_NMI;
 	bool PPUADDR_2nd_write;
 
 	bool should_render_background;

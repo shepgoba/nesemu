@@ -2,6 +2,14 @@
 #include "memory.h"
 #include "instructions.h"
 
+#if defined(__GNUC__) || defined(__clang__)
+#define NOINLINE __attribute__((noinline))
+#elif defined(_MSC_VER)
+#define NOINLINE __declspec(noinline)
+#else
+#define NOINLINE
+#endif
+
 /*
 
 Common function name terminologies:
@@ -246,7 +254,7 @@ static inline uint8_t __get_bit_16(uint16_t word, int bit)
 /*
 Generic implementations of many instructions
 */
-__attribute__((noinline))
+NOINLINE
 void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 {
 	int c_flag = get_flag(cpu, FLAG_C);
@@ -260,7 +268,7 @@ void _instr_ADC(nes_cpu_t *cpu, uint8_t num)
 	cpu->a = (uint8_t)result;
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_AND(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a &= num;
@@ -269,7 +277,7 @@ void _instr_AND(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->a - num;
@@ -279,7 +287,7 @@ void _instr_CMP(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->x - num;
@@ -289,7 +297,7 @@ void _instr_CPX(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
 {
 	uint8_t result = cpu->y - num;
@@ -299,7 +307,7 @@ void _instr_CPY(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(result));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a ^= num;
@@ -308,7 +316,7 @@ void _instr_EOR(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a = num;
@@ -317,7 +325,7 @@ void _instr_LDA(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->a));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->x = num;
@@ -326,7 +334,7 @@ void _instr_LDX(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->x));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->y = num;
@@ -335,7 +343,7 @@ void _instr_LDY(nes_cpu_t *cpu, uint8_t num)
 	set_flag(cpu, FLAG_N, __is_negative(cpu->y));
 }
 
-__attribute__((noinline))
+NOINLINE
 void _instr_ORA(nes_cpu_t *cpu, uint8_t num)
 {
 	cpu->a |= num;

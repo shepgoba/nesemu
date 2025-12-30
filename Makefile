@@ -6,12 +6,12 @@ OBJ_DIR := obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-CXXFLAGS := -O3 -Wall -Wextra -Wno-unused
+CXXFLAGS := -Og -Wall -Wextra -Wpedantic -Wno-unused -std=c23
 LDFLAGS :=
-LIBS := -lSDL2 #-static  -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc -lsetupapi -lole32 -loleaut32 -lSDL2 
+LIBS := -lSDL2
 
 
-ROM_FILE = roms\donkeykong.nes
+ROM_FILE = roms\cputest.nes
 
 nesemu: $(OBJ_FILES)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
