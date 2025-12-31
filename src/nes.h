@@ -5,7 +5,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "ppu.h"
-
+#include "apu.h"
 
 struct SDL_Renderer;
 struct SDL_Texture;
@@ -31,6 +31,8 @@ struct nes {
 	nes_memory_t memory;
 	nes_ppu_t ppu;
 	nes_vmemory_t vmemory;
+
+	nes_apu_t apu;
 	
 	ines_rom_header_t rom_header;
 	nes_rom_info_t rom_info;

@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "memory.h"
 #include "ppu.h"
+#include "apu.h"
 
 #define CPU_IMPLEMENT_ILLEGAL_OPCODES
 
@@ -47,6 +48,7 @@ typedef struct __nes_cpu {
 	// TODO: Abstract this out into a bus probably
 	nes_memory_t *mem;
 	nes_ppu_t *ppu;
+	nes_apu_t *apu;
 
 	uint32_t wait_cycles;
 	uint32_t total_cycles;
@@ -60,7 +62,7 @@ typedef struct __nes_cpu {
 	int strobe_keys_write_no;
 } nes_cpu_t;
 
-void cpu_init(nes_cpu_t *, nes_memory_t *, nes_ppu_t *);
+void cpu_init(nes_cpu_t *, nes_memory_t *, nes_ppu_t *, nes_apu_t *);
 void cpu_reset(nes_cpu_t *);
 void cpu_run_cycle(nes_cpu_t *);
 void cpu_check_interrupts(nes_cpu_t *);

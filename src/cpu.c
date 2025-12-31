@@ -6,10 +6,11 @@
 uint8_t mem_read_8(nes_cpu_t *, uint16_t);
 uint16_t mem_read_16(nes_cpu_t *, uint16_t);
 
-void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu)
+void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *apu)
 {
 	cpu->mem = memory;
 	cpu->ppu = ppu;
+	cpu->apu = apu;
 
 	cpu->sp = 0xfd;
 	cpu->sr = 0x24;

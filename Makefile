@@ -8,7 +8,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 CXXFLAGS := -Og -Wall -Wextra -Wpedantic -Wno-unused -std=c23
 LDFLAGS :=
-LIBS := -lSDL2
+LIBS := -lSDL3
 
 
 ROM_FILE = roms\mario.nes

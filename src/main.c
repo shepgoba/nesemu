@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define SDL_MAIN_HANDLED
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "utils.h"
 #include "nes.h"
@@ -19,16 +18,12 @@ int main(int argc, char **argv)
 	}
 
 	printf("NESEMU v0.1\n");
-
-	SDL_SetMainReady();
-	if (SDL_Init(SDL_INIT_VIDEO)) {
-		exit_with_error(1, "Couldn't initialize SDL");
+	if (!SDL_Init(SDL_INIT_VIDEO)) {
+		exit_with_error(1, "Couldn't initialize SDL: %s", SDL_GetError());
 	}
 
 	SDL_Window *window = SDL_CreateWindow(
 		WINDOW_NAME,
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
 		INTERNAL_VIDEO_WIDTH * VIDEO_SCALE,
 		INTERNAL_VIDEO_HEIGHT * VIDEO_SCALE,
 		0
@@ -39,8 +34,7 @@ int main(int argc, char **argv)
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(
 		window, 
-		-1, 
-		SDL_RENDERER_ACCELERATED
+		NULL
 	);
 	if (!renderer) {
 		exit_with_error(6, "Could not create renderer!");
@@ -56,6 +50,7 @@ int main(int argc, char **argv)
 	if (!video_texture) {
 		exit_with_error(7, "Could not create video texture!");
 	}
+	SDL_SetTextureScaleMode(video_texture, SDL_SCALEMODE_NEAREST);
 
 	nes_render_context_t render_ctx = {
 		renderer,
@@ -78,13 +73,13 @@ int main(int argc, char **argv)
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
-				case SDL_QUIT: {
+				case SDL_EVENT_QUIT: {
 					goto main_cleanup;
 					break;
 				}
-				case SDL_KEYDOWN:
-				case SDL_KEYUP: {
-					if (event.key.keysym.sym == SDLK_d) {
+				case SDL_EVENT_KEY_DOWN:
+				case SDL_EVENT_KEY_UP: {
+					if (event.key.key == SDLK_D) {
 						nes_dump_memory(&nes, "debug/mem.bin");
 						nes_dump_vmemory(&nes, "debug/vmem.bin");
 						log_event("Dumping RAM / VRAM. Exiting...");

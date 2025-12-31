@@ -1,5 +1,6 @@
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "nes.h"
 #include "utils.h"
 #define INES_HEADER_SIZE 0x10
@@ -16,8 +17,10 @@ bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
 		return false;
 	}
 
+	apu_init(&nes->apu);
 	ppu_init(&nes->ppu, &nes->vmemory);
-	cpu_init(&nes->cpu, &nes->memory, &nes->ppu);
+	cpu_init(&nes->cpu, &nes->memory, &nes->ppu, &nes->apu);
+
 
 	nes->rom_data = NULL;
 	nes->video_data = NULL;
@@ -103,7 +106,7 @@ done:
 
 static void render_frame(nes_render_context_t *render_ctx, uint32_t **video_data) 
 {
-	static const SDL_Rect video_display_rect = {
+	static const SDL_FRect video_display_rect = {
 		0,
 		0, 
 		INTERNAL_VIDEO_WIDTH * VIDEO_SCALE, 
@@ -112,7 +115,7 @@ static void render_frame(nes_render_context_t *render_ctx, uint32_t **video_data
 
 	SDL_UnlockTexture(render_ctx->video_texture);
 
-	SDL_RenderCopy(render_ctx->renderer, render_ctx->video_texture, NULL, &video_display_rect);
+	SDL_RenderTexture(render_ctx->renderer, render_ctx->video_texture, NULL, &video_display_rect);
 	SDL_RenderPresent(render_ctx->renderer);
 
 	int texture_pitch;

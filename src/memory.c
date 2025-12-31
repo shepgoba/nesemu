@@ -97,6 +97,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	uint8_t *mem = cpu->mem->data;
 	nes_ppu_t *ppu = cpu->ppu;
+	nes_apu_t *apu = cpu->apu;
 
 	if (cpu->mmc_type == 1) {
 		mem_write_8_mmc1(cpu, address, value);
@@ -189,6 +190,28 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				memcpy(ppu->oam, &mem[value * 0x100], 0x100);
 				cpu->wait_cycles = 513;
 
+				break;
+			}
+			case PULSE1_DLCV: {
+				printf("writing to PULSE1_DLCV dlcv\n");
+				break;
+			}
+			case PULSE1_SWEEP: {
+				printf("writing to PULSE1_SWEEP dlcv\n");
+				break;
+			}
+			case PULSE1_TIMER_LO: {
+				printf("writing to PULSE1_TIMER_LO dlcv\n");
+				break;
+			}
+			case PULSE1_LENGTH_CTR_TIMER_HI: {
+				printf("writing to PULSE1_LENGTH_CTR_TIMER_HI dlcv\n");
+				break;
+			}
+
+			case APU_STATUS: {
+				printf("writing to apu status=%i\n", value);
+				apu->status = value;
 				break;
 			}
 			case CONTROLLER_IO_ADDR: {

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <time.h>
 #include "utils.h"
 
@@ -35,10 +35,10 @@ void log_event(const char *message, ...)
 
 void handle_keypress(SDL_Event *event, uint8_t *key_state)
 {
-	static const SDL_KeyCode keys[] = {SDLK_a, SDLK_s, SDLK_o, SDLK_p, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT};
+	static const SDL_Keycode keys[] = {SDLK_A, SDLK_S, SDLK_O, SDLK_P, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT};
 	
-	SDL_KeyCode pressed_key = event->key.keysym.sym;
-	bool key_down = event->key.type == SDL_KEYDOWN;
+	SDL_Keycode pressed_key = event->key.key;
+	bool key_down = event->key.type == SDL_EVENT_KEY_DOWN;
 
 	uint8_t temp_key_state = *key_state;
 
