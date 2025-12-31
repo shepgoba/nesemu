@@ -42,5 +42,6 @@ typedef struct {
 } nes_apu_t;
 
 
-void apu_init(nes_apu_t *);
+bool apu_init(nes_apu_t *);
+void apu_pulse1_play(nes_apu_t *);
 #endif // APU_INCLUDE

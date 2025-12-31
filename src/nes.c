@@ -154,6 +154,8 @@ void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 	if ((master_clock_frame % MASTER_CLOCKS_PER_CPU_CLOCK) == 0) {
 		nes_do_cpu_cycle(nes);
 	}
+
+	apu_pulse1_play(&nes->apu);
 }
 
 void nes_do_frame_cycle(nes_t *nes)

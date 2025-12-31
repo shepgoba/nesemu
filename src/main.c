@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	}
 
 	printf("NESEMU v0.1\n");
-	if (!SDL_Init(SDL_INIT_VIDEO)) {
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
 		exit_with_error(1, "Couldn't initialize SDL: %s", SDL_GetError());
 	}
 

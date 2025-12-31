@@ -193,24 +193,49 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case PULSE1_DLCV: {
-				printf("writing to PULSE1_DLCV dlcv\n");
+				apu->pulse1.duty = value >> 6;
+				apu->pulse1.loop = __get_bit_8(value, 5);
+				apu->pulse1.constant_volume = __get_bit_8(value, 4);
+				apu->pulse1.volume_envelope = value & 0xf;
 				break;
 			}
 			case PULSE1_SWEEP: {
-				printf("writing to PULSE1_SWEEP dlcv\n");
+				/*
+					typedef struct {
+					int duty : 2;
+					bool loop : 1;
+					bool constant_volume : 1;
+					int volume_envelope : 4;
+
+					bool sweep_enabled : 1;
+					int period : 3;
+					bool negate : 1;
+					int shift : 3;
+
+					int timer : 11;
+					int length_counter : 5;
+					} nes_apu_pulse_t;
+ 				*/
+				//printf("writing to PULSE1_SWEEP dlcv\n");
+				apu->pulse1.sweep_enabled = __get_bit_8(value, 7);
+				apu->pulse1.period = (value >> 4) & 0b111;
+				apu->pulse1.negate = __get_bit_8(value, 3);
+				apu->pulse1.shift = value & 0b111;
 				break;
 			}
 			case PULSE1_TIMER_LO: {
-				printf("writing to PULSE1_TIMER_LO dlcv\n");
+				//apu->pulse1.timer &= 0x700;
+				apu->pulse1.timer |= value;
 				break;
 			}
 			case PULSE1_LENGTH_CTR_TIMER_HI: {
-				printf("writing to PULSE1_LENGTH_CTR_TIMER_HI dlcv\n");
+				apu->pulse1.timer &= 0xff;
+				apu->pulse1.timer |= (value & 0b111) << 8;
 				break;
 			}
 
 			case APU_STATUS: {
-				printf("writing to apu status=%i\n", value);
+				//printf("writing to apu status=%i\n", value);
 				apu->status = value;
 				break;
 			}

@@ -6,7 +6,7 @@ OBJ_DIR := obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-CXXFLAGS := -Og -Wall -Wextra -Wpedantic -Wno-unused -std=c23
+CXXFLAGS := -Og -g -Wall -Wextra -Wpedantic -Wno-unused -std=c23
 LDFLAGS :=
 LIBS := -lSDL3
 
