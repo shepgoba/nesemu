@@ -96,30 +96,31 @@ bool get_rom_info(FILE *handle, ines_rom_header_t *header, nes_rom_info_t *rom)
 	uint32_t rom_magic_swapped = bswap32(header->magic);
 
 	bool rom_is_valid = rom_magic_swapped == INES_ROM_MAGIC;
+	if (!rom_is_valid)
+		return false;
 
-	if (rom_is_valid) {
-		rom->prg_size = header->PRG_ROM_size * 16384;
-		rom->chr_size = 0;
-		rom->use_chr_ram = false;
+	rom->prg_size = header->PRG_ROM_size * 16384;
+	rom->chr_size = 0;
+	rom->use_chr_ram = false;
 
-		if (header->CHR_ROM_size != 0) {
-			rom->chr_size = header->CHR_ROM_size * 8192;
-		} else {
-			rom->use_chr_ram = true;
-		}
-
-		rom->battery_backed_ram = __get_bit_8(header->flags6, 1);
-		rom->use_trainer = __get_bit_8(header->flags6, 3);
-		
-		uint8_t mapper_id_lo_nibble = header->flags6 >> 4;
-
-		// flag7 & 0xf0 is the high nibble of the mapper id
-		rom->mapper_id = (header->flags7 & 0xf0) | mapper_id_lo_nibble;
-
-		if (rom->mapper_id != 0 && rom->mapper_id != 1) {
-			log_event("Unsupported ROM mapper ID! Exiting...");
-			return false;
-		}
+	if (header->CHR_ROM_size != 0) {
+		rom->chr_size = header->CHR_ROM_size * 8192;
+	} else {
+		rom->use_chr_ram = true;
 	}
-	return rom_is_valid;
+
+	rom->battery_backed_ram = __get_bit_8(header->flags6, 1);
+	rom->use_trainer = __get_bit_8(header->flags6, 3);
+	
+	uint8_t mapper_id_lo_nibble = header->flags6 >> 4;
+
+	// flag7 & 0xf0 is the high nibble of the mapper id
+	rom->mapper_id = (header->flags7 & 0xf0) | mapper_id_lo_nibble;
+
+	if (rom->mapper_id != 0 && rom->mapper_id != 1) {
+		log_event("Unsupported ROM mapper ID! Exiting...");
+		return false;
+	}
+
+	return true;
 }

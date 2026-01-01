@@ -38,8 +38,5 @@ bool apu_init(nes_apu_t *apu)
 
 void apu_pulse1_play(nes_apu_t *apu)
 {
-	// pulse 1 flag
-	if (apu->status & 1) {
-		// todo play shit
-	}
+
 }

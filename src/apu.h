@@ -20,6 +20,8 @@
 
 #define APU_STATUS 0x4015
 
+#define MASTER_CLOCKS_PER_APU_CLOCK 24
+
 typedef struct {
 	int duty : 2;
 	bool loop : 1;

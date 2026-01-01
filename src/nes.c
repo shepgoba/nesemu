@@ -145,6 +145,14 @@ static void nes_do_cpu_cycle(nes_t *nes)
 	nes->cpu.wait_cycles--;
 }
 
+static void nes_do_apu_cycle(nes_t *nes)
+{
+	// pulse 1 flag
+	if (nes->apu.status & 1) {
+		apu_pulse1_play(&nes->apu);
+	}
+}
+
 void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 {
 	if ((master_clock_frame % MASTER_CLOCKS_PER_PPU_CLOCK) == 0) {
@@ -155,7 +163,9 @@ void nes_do_master_cycle(nes_t *nes, uint32_t master_clock_frame)
 		nes_do_cpu_cycle(nes);
 	}
 
-	apu_pulse1_play(&nes->apu);
+	if ((master_clock_frame % MASTER_CLOCKS_PER_APU_CLOCK) == 0) {
+		nes_do_apu_cycle(nes);
+	}
 }
 
 void nes_do_frame_cycle(nes_t *nes)
