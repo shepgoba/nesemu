@@ -100,7 +100,11 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 			uint8_t pixel_data = (((hi_bits >> (7 - pixel_x)) & 1) << 1) | 
 								  ((lo_bits >> (7 - pixel_x)) & 1);
 
-			uint8_t *bg_palette_addr = ppu->vmem->data + 0x3f00 + specific_palette_data * 4;
+			uint16_t bg_palette_offset = pixel_data == 0 ? 0x3f00 :
+				0x3f00 + specific_palette_data * 4;
+
+			uint8_t *bg_palette_addr = ppu->vmem->data + bg_palette_offset;
+
 			uint32_t final_color = 0xff000000 | ntsc_rgb_table[bg_palette_addr[pixel_data]];
 
 			uint16_t pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + cur_tile_idx * 0x8 + pixel_x - scx % 8;
