@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 		video_texture
 	};
 
-	nes_t nes;
+	nes_t nes = {0};
 	if (!nes_init(&nes, &render_ctx)) {
 		exit_with_error(3, "Could not create main NES data!");
 	}

@@ -194,7 +194,6 @@ static const uint8_t cycle_count_table[256] = {
 
 uint32_t cpu_fetch_instruction(nes_cpu_t *cpu)
 {
-
 	uint8_t op = mem_read_8(cpu, cpu->pc);
 	uint8_t sz = size_table[op];
 	uint32_t final_opcode = op << 16;
