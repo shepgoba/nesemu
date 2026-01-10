@@ -68,6 +68,7 @@ int main(int argc, char **argv)
 
 	int pitch;
 	SDL_LockTexture(video_texture, NULL, (void **)&nes.video_data, &pitch);
+	nes_clear_screen(&nes);
 
 	while (true) {
 		SDL_Event event;

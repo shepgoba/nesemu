@@ -59,6 +59,7 @@ void nes_do_master_cycle(nes_t *, uint32_t);
 bool nes_load_rom(nes_t *, const char *);
 void nes_delay_if_necessary(nes_t *);
 void nes_do_frame_cycle(nes_t *);
+void nes_clear_screen(nes_t *);
 
 // utilities
 void nes_dump_memory(nes_t *, const char *);

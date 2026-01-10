@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "nes.h"
 #include "utils.h"
+//#define UNLIMITED_SPEED
 #define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
@@ -104,6 +105,20 @@ done:
 	return code;
 }
 
+void nes_clear_screen(nes_t *nes)
+{
+	uint32_t *p = nes->video_data;
+	size_t n = INTERNAL_VIDEO_WIDTH * INTERNAL_VIDEO_HEIGHT;
+
+	memset(p, 0, n * sizeof(uint32_t));
+
+	// set alpha on its own, faster
+	for (size_t i = 0; i < n; i++) {
+		p[i] |= 0xFF000000;
+	}
+}
+
+
 static void render_frame(nes_render_context_t *render_ctx, uint32_t **video_data) 
 {
 	static const SDL_FRect video_display_rect = {
@@ -129,6 +144,7 @@ static void nes_do_ppu_cycle(nes_t *nes, nes_render_context_t *render_ctx)
 
 	if (should_update_frame) {
 		render_frame(render_ctx, &nes->video_data);
+		nes_clear_screen(nes);
 	}
 
 	nes->ppu.dot_clock_scanline++;
@@ -194,7 +210,9 @@ void nes_cleanup(nes_t *nes)
 
 static void nes_delay(nes_t *nes, uint32_t time)
 {
+	#ifndef UNLIMITED_SPEED
 	SDL_Delay(time);
+	#endif
 }
 
 /*
