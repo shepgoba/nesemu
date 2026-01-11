@@ -212,31 +212,33 @@ void cpu_execute_instruction(nes_cpu_t *cpu, uint32_t instruction)
 {
 	opcode_table[instruction >> 16](cpu, instruction);
 }
-
+#define DEBUG
 #ifdef DEBUG
+#include "disassembler.h"
 void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
 {
-	uint8_t op = (instr >> 16) & 0xff;
-	uint8_t sz = size_table[op];
-
 	static FILE *debug_file = NULL;
-	static FILE *companion = NULL;
-	static int NUM_INSTRUCTIONS = 0;
 	if (!debug_file) {
 		debug_file = fopen("debug/path.log", "w+");
 	}
-	if (!companion) {
-		companion = fopen("debug/companion.log", "w+");
-	}
-	fprintf(debug_file, "pc:%04X\t", cpu->pc);
 
-	fprintf(debug_file, "%06x", instr);
+	int sz = size_table[instr >> 16];
+
+	char disasm_buf[32];
+	disasm_instr(instr, disasm_buf, sizeof(disasm_buf));
+
+	fprintf(debug_file, "pc:%04X\t", cpu->pc);
+	fprintf(debug_file, "%s", disasm_buf);
+	/*
+	fprintf(debug_file, "{");
+	for (int i = 0; i < sz; i++) {
+		fprintf(debug_file, "%02x", (instr >> 16 - 8 * i) & 0xff);
+	}
+	fprintf(debug_file, "}");
+	*/
 	fprintf(debug_file, "\t\t\t");
-	fprintf(companion, "%08i %04x\tA:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%i\n", NUM_INSTRUCTIONS + 1, cpu->pc, cpu->a, cpu->x,
-		cpu->y, cpu->sr, cpu->sp, cpu->total_cycles);
 	fprintf(debug_file, "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%i\n", cpu->a, cpu->x,
 		cpu->y, cpu->sr, cpu->sp, cpu->total_cycles);
-	NUM_INSTRUCTIONS++;
 }
 #endif
 
