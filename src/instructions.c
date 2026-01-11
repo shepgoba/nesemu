@@ -951,8 +951,6 @@ void instr_JMP_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	cpu->pc = addr;
-
-	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_JMP_ind(nes_cpu_t *cpu, uint32_t instr)
@@ -961,16 +959,13 @@ void instr_JMP_ind(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t deref_addr = __get_value_ind(cpu, addr);
 	cpu->pc = deref_addr;
 
-	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_JSR(nes_cpu_t *cpu, uint32_t instr)
 {
-	oper_push_16(cpu, cpu->pc + 2);
+	oper_push_16(cpu, cpu->pc - 1);
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	cpu->pc = addr;
-
-	cpu->pc -= 3; // hack to revert pc addition when opcode was fetched
 }
 
 
@@ -1408,13 +1403,11 @@ void instr_RTI(nes_cpu_t *cpu, uint32_t instr)
 	cpu_set_sr(cpu, new_sr);
 
 	cpu->pc = oper_pop_16(cpu);
-
-	cpu->pc--; // hack to revert pc addition when opcode was fetched
 }
 
 void instr_RTS(nes_cpu_t *cpu, uint32_t instr)
 {
-	cpu->pc = oper_pop_16(cpu);
+	cpu->pc = oper_pop_16(cpu) + 1;
 }
 
 void instr_SBC_abs(nes_cpu_t *cpu, uint32_t instr)

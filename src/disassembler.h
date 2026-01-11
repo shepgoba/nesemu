@@ -4,6 +4,6 @@
 #include <stdbool.h>
 
 // buf_len should be 32 bytes
-bool disasm_instr(uint32_t instr, char *buf, size_t buf_len);
+bool disasm_instr(uint32_t instr, char *buf, size_t buf_len, uint16_t pc);
 
 #endif // DISASM_INCLUDE

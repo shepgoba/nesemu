@@ -212,7 +212,7 @@ void cpu_execute_instruction(nes_cpu_t *cpu, uint32_t instruction)
 {
 	opcode_table[instruction >> 16](cpu, instruction);
 }
-#define DEBUG
+
 #ifdef DEBUG
 #include "disassembler.h"
 void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
@@ -225,10 +225,10 @@ void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
 	int sz = size_table[instr >> 16];
 
 	char disasm_buf[32];
-	disasm_instr(instr, disasm_buf, sizeof(disasm_buf));
+	disasm_instr(instr, disasm_buf, sizeof(disasm_buf), cpu->pc);
 
 	fprintf(debug_file, "pc:%04X\t", cpu->pc);
-	fprintf(debug_file, "%s", disasm_buf);
+	fprintf(debug_file, "%-*s", 24, disasm_buf);
 	/*
 	fprintf(debug_file, "{");
 	for (int i = 0; i < sz; i++) {
@@ -236,9 +236,9 @@ void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
 	}
 	fprintf(debug_file, "}");
 	*/
-	fprintf(debug_file, "\t\t\t");
+	
 	fprintf(debug_file, "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%i\n", cpu->a, cpu->x,
-		cpu->y, cpu->sr, cpu->sp, cpu->total_cycles);
+		cpu->y, cpu->sr, cpu->sp, 0);
 }
 #endif
 
@@ -256,20 +256,19 @@ void cpu_run_cycle(nes_cpu_t *cpu)
 	uint32_t instr = cpu_fetch_instruction(cpu);
 	uint8_t op = (instr >> 16) & 0xff;
 	uint8_t sz = size_table[op];
+	cpu->pc += sz;
 
 	int instr_cycle_count = cycle_count_table[op];
-
-	#ifdef DEBUG
-	log_debug_info(cpu, instr);
-	#endif
-
 	cpu_execute_instruction(cpu, instr);
-	
-	cpu->pc += sz;
+
 	cpu->wait_cycles += instr_cycle_count;
 	cpu->total_cycles += cpu->wait_cycles;
 
 	cpu_check_interrupts(cpu);
+
+	#ifdef DEBUG
+	log_debug_info(cpu, instr);
+	#endif
 }
 
 uint8_t cpu_get_sr(nes_cpu_t *cpu) {

@@ -12,7 +12,7 @@ static const char *implied_mnemonics[16] = {
 static const char *branch_mnemonics[8] = {"BPL", "BMI", "BVC", "BVS", "BCC", "BCS", "BNE", "BEQ"};
 static const char *A_mnemonics[4] = {"ASL", "ROL", "LSR", "ROR"};
 
-bool disasm_instr(uint32_t instr, char *buf, size_t buf_len)
+bool disasm_instr(uint32_t instr, char *buf, size_t buf_len, uint16_t pc)
 {
 	bool unknown = false;
 	uint8_t opc = (instr >> 16) & 0xff;
@@ -27,7 +27,7 @@ bool disasm_instr(uint32_t instr, char *buf, size_t buf_len)
 
 	if (opc_nib_lo == 0) {
 		if (opc_nib_hi & 1) {
-			snprintf(buf, buf_len, "%s rel %hhd", branch_mnemonics[opc_nib_hi >> 1], simm8);
+			snprintf(buf, buf_len, "%s $%04x", branch_mnemonics[opc_nib_hi >> 1], pc + simm8);
 		} else {
 			if (opc_nib_hi < 8) {
 				if (opc_nib_hi == 0) {
@@ -71,7 +71,7 @@ bool disasm_instr(uint32_t instr, char *buf, size_t buf_len)
 			snprintf(buf, buf_len, "STY $%02x", imm8);
 		} else if (opc_nib_hi == 9) {
 			snprintf(buf, buf_len, "STY $%02x, X", imm8);
-		}else if (opc_nib_hi == 0xa) {
+		} else if (opc_nib_hi == 0xa) {
 			snprintf(buf, buf_len, "LDY $%02x", imm8);
 		} else if (opc_nib_hi == 0xb) {
 			snprintf(buf, buf_len, "LDY $%02x, X", imm8);
