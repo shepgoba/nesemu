@@ -481,7 +481,7 @@ void instr_ASL_abs(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs(cpu, addr);
-	int status = __get_bit_8(cpu->a, 7);
+	int status = __get_bit_8(num, 7);
 
 	set_flag(cpu, FLAG_C, status);
 	num <<= 1;
@@ -496,7 +496,7 @@ void instr_ASL_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint8_t num = __get_value_abs_x(cpu, addr, false);
-	int status = __get_bit_8(cpu->a, 7);
+	int status = __get_bit_8(num, 7);
 
 	set_flag(cpu, FLAG_C, status);
 	num <<= 1;
@@ -511,7 +511,7 @@ void instr_ASL_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg(cpu, addr);
-	int status = __get_bit_8(cpu->a, 7);
+	int status = __get_bit_8(num, 7);
 
 	set_flag(cpu, FLAG_C, status);
 	num <<= 1;
@@ -526,7 +526,7 @@ void instr_ASL_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
 	uint8_t addr = __get_imm8_from_opcode(instr);
 	uint8_t num = __get_value_zpg_x(cpu, addr);
-	int status = __get_bit_8(cpu->a, 7);
+	int status = __get_bit_8(num, 7);
 
 	set_flag(cpu, FLAG_C, status);
 	num <<= 1;
