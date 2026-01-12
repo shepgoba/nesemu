@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-
 #include <SDL3/SDL.h>
-
 #include "utils.h"
 #include "nes.h"
 
-#define WINDOW_NAME "NESEMU"
+#define APP_NAME "NESEMU"
 
 int main(int argc, char **argv)
 {
@@ -17,13 +15,13 @@ int main(int argc, char **argv)
 		exit_with_error(2, "Usage: nesemu <rom path>");
 	}
 
-	printf("NESEMU v0.1\n");
+	printf("%s v0.1\n", APP_NAME);
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
 		exit_with_error(1, "Couldn't initialize SDL: %s", SDL_GetError());
 	}
 
 	SDL_Window *window = SDL_CreateWindow(
-		WINDOW_NAME,
+		APP_NAME,
 		INTERNAL_VIDEO_WIDTH * VIDEO_SCALE,
 		INTERNAL_VIDEO_HEIGHT * VIDEO_SCALE,
 		0
@@ -31,7 +29,10 @@ int main(int argc, char **argv)
 	if (!window) {
 		exit_with_error(5, "Could not create window!");
 	}
-
+	#ifdef __APPLE__
+	// TODO: fix code so fix integer scaling works on metal
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+	#endif
 	SDL_Renderer *renderer = SDL_CreateRenderer(
 		window, 
 		NULL
@@ -42,7 +43,7 @@ int main(int argc, char **argv)
 
 	SDL_Texture *video_texture = SDL_CreateTexture(
 		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
+		SDL_PIXELFORMAT_XRGB8888,
 		SDL_TEXTUREACCESS_STREAMING,
 		INTERNAL_VIDEO_WIDTH,
 		INTERNAL_VIDEO_HEIGHT

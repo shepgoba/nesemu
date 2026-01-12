@@ -3,9 +3,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-uint8_t mem_read_8(nes_cpu_t *, uint16_t);
-uint16_t mem_read_16(nes_cpu_t *, uint16_t);
-
 void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *apu)
 {
 	cpu->mem = memory;
@@ -13,9 +10,6 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *a
 	cpu->apu = apu;
 
 	cpu->sp = 0xfd;
-	cpu->sr = 0x24;
-
-	//cpu->sr ^= cpu->sp;
 
 	cpu->wait_cycles = 7;
 	cpu->total_cycles = 0;
@@ -25,7 +19,7 @@ void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *a
 void cpu_reset(nes_cpu_t *cpu)
 {
 	cpu->pc = mem_read_16(cpu, RESET_VECTOR_ADDR);
-	printf("Starting PC at: 0x%04x\n", cpu->mem->data[RESET_VECTOR_ADDR]);
+	printf("Starting PC at: 0x%04x\n", cpu->pc);
 }
  
 static void do_irq_interrupt(nes_cpu_t *cpu)
@@ -47,14 +41,14 @@ static void do_nmi_interrupt(nes_cpu_t *cpu)
 
 void cpu_check_interrupts(nes_cpu_t *cpu)
 {
-	// IRQ interrupt
-	if (!get_flag(cpu, FLAG_I)) {
-		do_irq_interrupt(cpu);
-	}
-
 	// NMI interrupt
 	if (cpu->ppu->in_vblank && cpu->ppu->NMI_output && !cpu->ppu->triggered_NMI) {
 		do_nmi_interrupt(cpu);
+	}
+
+	// IRQ interrupt
+	if (!get_flag(cpu, FLAG_I)) {
+		do_irq_interrupt(cpu);
 	}
 }
 
@@ -215,7 +209,7 @@ void cpu_execute_instruction(nes_cpu_t *cpu, uint32_t instruction)
 
 #ifdef DEBUG
 #include "disassembler.h"
-void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
+void log_debug_info(nes_cpu_t *cpu, uint32_t instr, uint16_t iaddr)
 {
 	static FILE *debug_file = NULL;
 	if (!debug_file) {
@@ -227,7 +221,7 @@ void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
 	char disasm_buf[32];
 	disasm_instr(instr, disasm_buf, sizeof(disasm_buf), cpu->pc);
 
-	fprintf(debug_file, "pc:%04X\t", cpu->pc);
+	fprintf(debug_file, "%04X\t", iaddr);
 	fprintf(debug_file, "%-*s", 24, disasm_buf);
 	/*
 	fprintf(debug_file, "{");
@@ -237,8 +231,11 @@ void log_debug_info(nes_cpu_t *cpu, uint32_t instr)
 	fprintf(debug_file, "}");
 	*/
 	
-	fprintf(debug_file, "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%i\n", cpu->a, cpu->x,
-		cpu->y, cpu->sr, cpu->sp, 0);
+	char buf[9];
+	byte_to_binary_str(buf, sizeof(buf), cpu_get_sr(cpu));
+
+	fprintf(debug_file, "A:%02X X:%02X Y:%02X P:%s SP:%02X CYC:%i\n", cpu->a, cpu->x,
+		cpu->y, buf, cpu->sp, 0);
 }
 #endif
 
@@ -256,7 +253,12 @@ void cpu_run_cycle(nes_cpu_t *cpu)
 	uint32_t instr = cpu_fetch_instruction(cpu);
 	uint8_t op = (instr >> 16) & 0xff;
 	uint8_t sz = size_table[op];
+
 	cpu->pc += sz;
+
+	#ifdef DEBUG
+	log_debug_info(cpu, instr, cpu->pc - sz);
+	#endif
 
 	int instr_cycle_count = cycle_count_table[op];
 	cpu_execute_instruction(cpu, instr);
@@ -265,10 +267,6 @@ void cpu_run_cycle(nes_cpu_t *cpu)
 	cpu->total_cycles += cpu->wait_cycles;
 
 	cpu_check_interrupts(cpu);
-
-	#ifdef DEBUG
-	log_debug_info(cpu, instr);
-	#endif
 }
 
 uint8_t cpu_get_sr(nes_cpu_t *cpu) {

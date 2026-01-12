@@ -107,15 +107,7 @@ done:
 
 void nes_clear_screen(nes_t *nes)
 {
-	uint32_t *p = nes->video_data;
-	size_t n = INTERNAL_VIDEO_WIDTH * INTERNAL_VIDEO_HEIGHT;
-
-	memset(p, 0, n * sizeof(uint32_t));
-
-	// set alpha on its own, faster
-	for (size_t i = 0; i < n; i++) {
-		p[i] |= 0xFF000000;
-	}
+	memset(nes->video_data, 0, INTERNAL_VIDEO_WIDTH * INTERNAL_VIDEO_HEIGHT * sizeof(uint32_t));
 }
 
 

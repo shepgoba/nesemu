@@ -39,7 +39,6 @@ typedef struct __nes_cpu {
 	uint8_t x;
 	uint8_t y;
 	uint8_t sp;
-	uint8_t sr;
 
 	// Flags (pretty self explanatory)
 	uint8_t flags[CPU_NUM_FLAGS];

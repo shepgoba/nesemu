@@ -51,6 +51,7 @@ typedef struct {
 	bool in_vblank;
 	bool triggered_NMI;
 	bool W_toggle;
+	uint8_t ppudata_buf;
 
 	bool should_render_background;
 	bool should_render_sprites;

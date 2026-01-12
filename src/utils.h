@@ -34,4 +34,5 @@ bool get_rom_info(FILE *, ines_rom_header_t *, nes_rom_info_t *);
 void handle_keypress(union SDL_Event *, uint8_t *);
 void exit_with_error(int, const char *, ...);
 void log_event(const char *, ...);
+bool byte_to_binary_str(char *, size_t, uint8_t);
 #endif

@@ -4,6 +4,20 @@
 #include <time.h>
 #include "utils.h"
 
+bool byte_to_binary_str(char *buf, size_t buf_len, uint8_t byte)
+{
+    if (buf_len < 9) {
+        return false;
+    }
+    
+    for (size_t i = 0; i < 8; i++) {
+        buf[i] = (byte >> (7 - i)) & 1 ? '1' : '0';
+    }
+
+    buf[buf_len - 1] = '\0';
+    return true;
+}
+
 void exit_with_error(int code, const char *message, ...)
 {
 	va_list args;

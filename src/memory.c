@@ -280,6 +280,7 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 				| ((uint8_t)ppu->sprite0hit << 6);
 
 			ppu->in_vblank = false;
+			ppu->W_toggle = false;
 
 			return copy;
 			break;
@@ -293,7 +294,9 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 					addr &= 0x3fef;
 				}
 			}
-			return ppu->vmem->data[addr];
+			uint8_t old = ppu->ppudata_buf;
+			ppu->ppudata_buf = ppu->vmem->data[addr];
+			return old;
 			break;
 		}
 		case OAMADDR_ADDR: {

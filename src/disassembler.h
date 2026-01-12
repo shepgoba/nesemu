@@ -1,5 +1,6 @@
 #ifndef DISASM_INCLUDE
 #define DISASM_INCLUDE
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
