@@ -21,7 +21,7 @@ void cpu_reset(nes_cpu_t *cpu)
 	cpu->pc = mem_read_16(cpu, RESET_VECTOR_ADDR);
 	printf("Starting PC at: 0x%04x\n", cpu->pc);
 }
- 
+
 static void do_irq_interrupt(nes_cpu_t *cpu)
 {
 	oper_push_16(cpu, cpu->pc);
@@ -209,13 +209,12 @@ void cpu_execute_instruction(nes_cpu_t *cpu, uint32_t instruction)
 
 #ifdef DEBUG
 #include "disassembler.h"
+static FILE *debug_file = NULL;
 void log_debug_info(nes_cpu_t *cpu, uint32_t instr, uint16_t iaddr)
 {
-	static FILE *debug_file = NULL;
 	if (!debug_file) {
 		debug_file = fopen("debug/path.log", "w+");
 	}
-
 	int sz = size_table[instr >> 16];
 
 	char disasm_buf[32];
@@ -230,7 +229,7 @@ void log_debug_info(nes_cpu_t *cpu, uint32_t instr, uint16_t iaddr)
 	}
 	fprintf(debug_file, "}");
 	*/
-	
+
 	char buf[9];
 	byte_to_binary_str(buf, sizeof(buf), cpu_get_sr(cpu));
 
@@ -271,9 +270,9 @@ void cpu_run_cycle(nes_cpu_t *cpu)
 
 uint8_t cpu_get_sr(nes_cpu_t *cpu) {
 	return 	cpu->flags[FLAG_C] |
-		   	(cpu->flags[FLAG_Z] << 1) |
+			(cpu->flags[FLAG_Z] << 1) |
 			(cpu->flags[FLAG_I] << 2) |
-			(cpu->flags[FLAG_D] << 3) |	
+			(cpu->flags[FLAG_D] << 3) |
 			(cpu->flags[FLAG_B] << 4) |
 			(cpu->flags[FLAG_V] << 6) |
 			(cpu->flags[FLAG_N] << 7);
@@ -287,5 +286,7 @@ void cpu_set_sr(nes_cpu_t *cpu, uint8_t new_sr) {
 
 void cpu_cleanup(nes_cpu_t *cpu)
 {
-	
+	#ifdef DEBUG
+	fclose(debug_file);
+	#endif
 }

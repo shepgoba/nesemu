@@ -53,7 +53,7 @@ typedef struct __nes_cpu {
 	uint32_t total_cycles;
 
 	mmc_type_t mmc_type;
-	
+
 	// Input key state management
 	// TODO: Abstract this out into a separate component
 	uint8_t key_state;
@@ -68,7 +68,7 @@ void cpu_check_interrupts(nes_cpu_t *);
 uint32_t cpu_fetch_instruction(nes_cpu_t *);
 void cpu_execute_instruction(nes_cpu_t *, uint32_t);
 void cpu_update_registers(nes_cpu_t *, uint8_t);
-void cpu_cleanup(nes_cpu_t *cpu);
+void cpu_cleanup(nes_cpu_t *);
 
 uint8_t cpu_get_sr(nes_cpu_t *);
 void cpu_set_sr(nes_cpu_t *, uint8_t);
