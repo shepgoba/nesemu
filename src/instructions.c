@@ -92,6 +92,13 @@ uint16_t oper_pop_16(nes_cpu_t *cpu)
 	return result;
 }
 
+static inline void __add_cpu_cycle_if_page_overflow(nes_cpu_t *cpu, uint16_t address, uint8_t offset)
+{
+	if (__has_page_overflow(address, offset)) {
+		cpu->wait_cycles++;
+	}
+}
+
 static inline void __set_value_abs(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
 	mem_write_8(cpu, address, value);
@@ -99,11 +106,13 @@ static inline void __set_value_abs(nes_cpu_t *cpu, uint16_t address, uint8_t val
 
 static inline void __set_value_abs_x(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
+	__add_cpu_cycle_if_page_overflow(cpu, address, cpu->x);
 	mem_write_8(cpu, address + cpu->x, value);
 }
 
 static inline void __set_value_abs_y(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 {
+	__add_cpu_cycle_if_page_overflow(cpu, address, cpu->y);
 	mem_write_8(cpu, address + cpu->y, value);
 }
 
@@ -114,13 +123,13 @@ static inline void __set_value_zpg(nes_cpu_t *cpu, uint8_t address, uint8_t valu
 
 static inline void __set_value_zpg_x(nes_cpu_t *cpu, uint8_t address, uint8_t value)
 {
-	// relies on 8 bit overflow
+	__add_cpu_cycle_if_page_overflow(cpu, address, cpu->x);
 	mem_write_8(cpu, (uint8_t)(address + cpu->x), value);
 }
 
 static inline void __set_value_zpg_y(nes_cpu_t *cpu, uint8_t address, uint8_t value)
 {
-	// relies on 8 bit overflow
+	__add_cpu_cycle_if_page_overflow(cpu, address, cpu->y);
 	mem_write_8(cpu, (uint8_t)(address + cpu->y), value);
 }
 
