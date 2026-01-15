@@ -13,7 +13,7 @@ LDFLAGS += -lSDL3
 ROM_FILE = roms/mario.nes
 
 nesemu: $(OBJ_FILES)
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<

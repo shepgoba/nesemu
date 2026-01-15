@@ -71,6 +71,7 @@ int main(int argc, char **argv)
 	SDL_LockTexture(video_texture, NULL, (void **)&nes.video_data, &pitch);
 	nes_clear_screen(&nes);
 
+	bool unlimited_speed = false;
 	while (true) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -87,6 +88,8 @@ int main(int argc, char **argv)
 						log_event("Dumping RAM / VRAM. Exiting...");
 
 						goto main_cleanup;
+					} else if (event.key.key == SDLK_TAB) {
+						unlimited_speed = event.key.type == SDL_EVENT_KEY_DOWN;
 					} else {
 						handle_keypress(&event, &nes.key_state);
 					}
@@ -97,7 +100,9 @@ int main(int argc, char **argv)
 		}
 
 		nes_do_frame_cycle(&nes);
-		nes_delay_if_necessary(&nes);
+		if (!unlimited_speed) {
+			nes_delay_if_necessary(&nes);
+		}
 	}
 
 main_cleanup:
