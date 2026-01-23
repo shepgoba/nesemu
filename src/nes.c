@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "nes.h"
 #include "utils.h"
-//#define UNLIMITED_SPEED
+#define UNLIMITED_SPEED
 #define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)

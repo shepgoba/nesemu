@@ -254,6 +254,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 	}
 }
 
+NOINLINE
 void mem_write_16(nes_cpu_t *cpu, uint16_t address, uint16_t value)
 {
 	mem_write_8(cpu, address, value & 0xff);
@@ -331,6 +332,7 @@ uint8_t mem_read_8(nes_cpu_t *cpu, uint16_t address)
 	return 0;
 }
 
+NOINLINE
 uint16_t mem_read_16(nes_cpu_t *cpu, uint16_t address)
 {
 	uint8_t lo_byte = mem_read_8(cpu, address);

@@ -967,7 +967,6 @@ void instr_JMP_ind(nes_cpu_t *cpu, uint32_t instr)
 	uint16_t addr = __get_imm16_from_opcode(instr);
 	uint16_t deref_addr = __get_value_ind(cpu, addr);
 	cpu->pc = deref_addr;
-
 }
 
 void instr_JSR(nes_cpu_t *cpu, uint32_t instr)

@@ -82,14 +82,14 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 	int scy = ppu->PPUSCROLLY;
 
 	for (int cur_tile_idx = 0; cur_tile_idx < HORIZONTAL_TILE_COUNT; cur_tile_idx++) {
-		int palette_offset = (ppu->scanline / 32) * 8 + ((cur_tile_idx + scx / 8) % 32) / 4;
+		int palette_offset = (ppu->scanline / 32) * 8 + cur_tile_idx / 4;
 		uint8_t palette_data = attributedata_ptr[palette_offset];
 
-		bool horizontal_odd = ((cur_tile_idx + (scx / 8)) % 32) / 2 & 1;
+		bool horizontal_odd = (cur_tile_idx / 2) & 1;
 		bool vertical_odd = (ppu->scanline / 16) & 1;
 
 		uint8_t specific_palette_data = palette_data >> (((vertical_odd << 1) | horizontal_odd) << 1) & 0b11;
-		int nametable_offset = (ppu->scanline / 8) * 32 + (cur_tile_idx + scx / 8) % 32;
+		int nametable_offset = (ppu->scanline / 8) * 32 + cur_tile_idx;
 
 		uint8_t tile_data_offset = nametable_ptr[nametable_offset];
 		int offset = (tile_data_offset * 16) + (ppu->scanline % 8);
@@ -108,7 +108,7 @@ void ppu_draw_background_scanline(nes_ppu_t *ppu, uint32_t *video_data)
 
 			uint32_t final_color = ntsc_rgb_table[bg_palette_addr[pixel_data]];
 
-			uint16_t pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + cur_tile_idx * 0x8 + pixel_x - scx % 8;
+			uint16_t pixel_addr = ppu->scanline * INTERNAL_VIDEO_WIDTH + cur_tile_idx * 0x8 + pixel_x;
 			video_data[pixel_addr] = final_color;
 		}
 	}
