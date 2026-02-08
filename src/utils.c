@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <time.h>
 #include "utils.h"
+#include "utils_platform.h"
 
 bool byte_to_binary_str(char *buf, size_t buf_len, uint8_t byte)
 {
@@ -34,12 +35,14 @@ void log_event(const char *message, ...)
 	va_list args;
 	va_start(args, message);
 	
-	time_t timer = time(NULL);
-	struct tm *tm_info = localtime(&timer);
+
+	precise_time_t t = get_precise_time();
+	struct tm *tm_info = localtime(&t.time);
 
 	char buffer[26];
 	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", tm_info);
-	printf("[%s] ", buffer);
+
+	printf("[%s.%06lli] ", buffer, t.nanoseconds / 1000);
 
 	vprintf(message, args);
 	va_end(args);

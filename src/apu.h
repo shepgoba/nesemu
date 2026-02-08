@@ -17,8 +17,9 @@
 #define TRIANGLE_TIMER_LO 0x400A
 #define TRIANGLE_LENGTH_CTR_TIMER_HI 0x400B
 
-
 #define APU_STATUS 0x4015
+
+#define APU_FRAME_COUNTER 0x4017
 
 #define MASTER_CLOCKS_PER_APU_CLOCK 24
 
@@ -45,5 +46,5 @@ typedef struct {
 
 
 bool apu_init(nes_apu_t *);
-void apu_pulse1_play(nes_apu_t *);
+void apu_pulse_play(nes_apu_t *, nes_apu_pulse_t *pulse);
 #endif // APU_INCLUDE

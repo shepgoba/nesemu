@@ -36,7 +36,7 @@ bool apu_init(nes_apu_t *apu)
 	return true;
 }
 
-void apu_pulse1_play(nes_apu_t *apu)
+void apu_pulse_play(nes_apu_t *apu, nes_apu_pulse_t *pulse)
 {
 
 }

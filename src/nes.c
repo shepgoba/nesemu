@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "nes.h"
 #include "utils.h"
-#define UNLIMITED_SPEED
+
 #define INES_HEADER_SIZE 0x10
 
 bool nes_init(nes_t *nes, nes_render_context_t *render_ctx)
@@ -157,7 +157,12 @@ static void nes_do_apu_cycle(nes_t *nes)
 {
 	// pulse 1 flag
 	if (nes->apu.status & 1) {
-		apu_pulse1_play(&nes->apu);
+		apu_pulse_play(&nes->apu, &nes->apu.pulse1);
+	}
+
+	// pulse 2 flag
+	if (nes->apu.status & 2) {
+		apu_pulse_play(&nes->apu, &nes->apu.pulse2);
 	}
 }
 
