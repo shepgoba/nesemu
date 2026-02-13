@@ -1722,67 +1722,75 @@ void iinstr_LAS_abs_y(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_LAX_abs(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_abs(cpu, instr);
+	cpu->x = cpu->a;
 }
 
 void iinstr_LAX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_abs_y(cpu, instr);
+	cpu->x = cpu->a;
 }
 
 void iinstr_LAX_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_imm(cpu, instr);
+	cpu->x = cpu->a;
 }
 
 void iinstr_LAX_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_ind_y(cpu, instr);
+	cpu->x = cpu->a;
 }
 
 void iinstr_LAX_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_x_ind(cpu, instr);
+	cpu->x = cpu->a;
 }
 
 void iinstr_LAX_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	instr_LDA_zpg(cpu, instr);
+	cpu->x = cpu->a;
 }
 
-void iinstr_LAX_zpg_x(nes_cpu_t *cpu, uint32_t instr)
+void iinstr_LAX_zpg_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// copy to X first to prevent code duplication
+	instr_LDX_zpg_y(cpu, instr);
+	cpu->a = cpu->x;
 }
 
 void iinstr_NOP(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_NOP_abs(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_NOP_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_NOP_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_NOP_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_NOP_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// do nothing
 }
 
 void iinstr_RLA_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -1857,22 +1865,34 @@ void iinstr_RRA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_SAX_abs(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = cpu->a & cpu->x;
 
+	__set_value_abs(cpu, addr, num);
 }
 
 void iinstr_SAX_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = cpu->a & cpu->x;
 
+	__set_value_x_ind(cpu, addr, num);
 }
 
 void iinstr_SAX_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = cpu->a & cpu->x;
 
+	__set_value_zpg(cpu, addr, num);
 }
 
-void iinstr_SAX_zpg_x(nes_cpu_t *cpu, uint32_t instr)
+void iinstr_SAX_zpg_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = cpu->a & cpu->x;
 
+	__set_value_zpg_y(cpu, addr, num);
 }
 
 void iinstr_SBC_imm(nes_cpu_t *cpu, uint32_t instr)
