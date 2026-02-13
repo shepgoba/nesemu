@@ -1611,17 +1611,17 @@ void instr_TYA(nes_cpu_t *cpu, uint32_t instr)
 //illegal opcodes
 void iinstr_AHX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 
 void iinstr_AHX_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 
 void iinstr_ALR_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// TODO
 }
 
 void iinstr_ANC_imm(nes_cpu_t *cpu, uint32_t instr)
@@ -1632,12 +1632,12 @@ void iinstr_ANC_imm(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_ARR_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// TODO
 }
 
 void iinstr_AXS_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// TODO
 }
 
 void iinstr_DCP_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -1796,12 +1796,12 @@ void iinstr_ISC_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_KILL(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// freezes cpu so just do nothing
 }
 
 void iinstr_LAS_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// TODO
 }
 
 void iinstr_LAX_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -2112,12 +2112,12 @@ void iinstr_SBC_imm(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_SHX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 
 void iinstr_SHY_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 
 void iinstr_SLO_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -2298,11 +2298,11 @@ void iinstr_SRE_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_TAS_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 
 void iinstr_XAA_imm(nes_cpu_t *cpu, uint32_t instr)
 {
-
+	// unstable
 }
 #endif
