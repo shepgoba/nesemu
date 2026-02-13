@@ -623,8 +623,6 @@ void instr_BPL(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_BRK(nes_cpu_t *cpu, uint32_t instr)
 {
-	set_flag(cpu, FLAG_I, 1);
-
 	oper_push_16(cpu, cpu->pc);
 
 	/*
@@ -633,6 +631,8 @@ void instr_BRK(nes_cpu_t *cpu, uint32_t instr)
 	*/
 	uint8_t copy = cpu_get_sr(cpu) | 0b00110000;
 	oper_push_8(cpu, copy);
+
+	set_flag(cpu, FLAG_I, 1);
 }
 
 

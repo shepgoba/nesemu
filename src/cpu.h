@@ -59,6 +59,7 @@ typedef struct __nes_cpu {
 	uint8_t key_state;
 	bool strobe_keys;
 	int strobe_keys_write_no;
+	bool irq_input;
 } nes_cpu_t;
 
 void cpu_init(nes_cpu_t *, nes_memory_t *, nes_ppu_t *, nes_apu_t *);

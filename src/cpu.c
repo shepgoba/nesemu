@@ -47,7 +47,7 @@ void cpu_check_interrupts(nes_cpu_t *cpu)
 	}
 
 	// IRQ interrupt
-	if (!get_flag(cpu, FLAG_I)) {
+	if (!get_flag(cpu, FLAG_I) && cpu->irq_input) {
 		do_irq_interrupt(cpu);
 	}
 }
@@ -273,7 +273,6 @@ uint8_t cpu_get_sr(nes_cpu_t *cpu) {
 			(cpu->flags[FLAG_Z] << 1) |
 			(cpu->flags[FLAG_I] << 2) |
 			(cpu->flags[FLAG_D] << 3) |
-			(cpu->flags[FLAG_B] << 4) |
 			(cpu->flags[FLAG_V] << 6) |
 			(cpu->flags[FLAG_N] << 7);
 }
