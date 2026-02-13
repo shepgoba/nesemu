@@ -1879,72 +1879,198 @@ void iinstr_NOP_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_RLA_abs(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_abs(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_x(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_abs_x(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_y(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_abs_y(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_ind_y(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_ind_y(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_x_ind(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_x_ind(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_zpg(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RLA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg_x(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, __get_bit_8(num, 7));
+
+	num = (num << 1) | c_flag;
+
+	__set_value_zpg_x(cpu, addr, num);
+	_instr_AND(cpu, num);
 }
 
 void iinstr_RRA_abs(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_abs(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_x(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_abs_x(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_y(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_abs_y(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_ind_y(cpu, addr, false);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_ind_y(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_x_ind(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_x_ind(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_zpg(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_RRA_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg_x(cpu, addr);
 
+	int c_flag = get_flag(cpu, FLAG_C);
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num = (num >> 1) | (c_flag << 7);
+
+	__set_value_zpg_x(cpu, addr, num);
+	_instr_ADC(cpu, num);
 }
 
 void iinstr_SAX_abs(nes_cpu_t *cpu, uint32_t instr)
@@ -2088,37 +2214,86 @@ void iinstr_SLO_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void iinstr_SRE_abs(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs(cpu, addr);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_abs(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_abs_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_x(cpu, addr, false);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_abs_x(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_abs_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint16_t addr = __get_imm16_from_opcode(instr);
+	uint8_t num = __get_value_abs_y(cpu, addr, false);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_abs_y(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_ind_y(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_ind_y(cpu, addr, false);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_ind_y(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_x_ind(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_x_ind(cpu, addr);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_x_ind(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_zpg(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg(cpu, addr);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_zpg(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_SRE_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 {
+	uint8_t addr = __get_imm8_from_opcode(instr);
+	uint8_t num = __get_value_zpg_x(cpu, addr);
 
+	set_flag(cpu, FLAG_C, num & 1);
+
+	num >>= 1;
+	__set_value_zpg_x(cpu, addr, num);
+	_instr_EOR(cpu, num);
 }
 
 void iinstr_TAS_abs_y(nes_cpu_t *cpu, uint32_t instr)
