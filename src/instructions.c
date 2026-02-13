@@ -666,6 +666,7 @@ void instr_CLD(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_CLI(nes_cpu_t *cpu, uint32_t instr)
 {
+	printf("enabling interrupts\n");
 	set_flag(cpu, FLAG_I, 0);
 }
 

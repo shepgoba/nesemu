@@ -24,10 +24,10 @@ void cpu_reset(nes_cpu_t *cpu)
 
 static void do_irq_interrupt(nes_cpu_t *cpu)
 {
+	instr_SEI(cpu, 1);
 	oper_push_16(cpu, cpu->pc);
 	oper_push_8(cpu, cpu_get_sr(cpu));
 	cpu->pc = mem_read_16(cpu, IRQ_INTERRUPT_VECTOR_ADDR);
-	instr_SEI(cpu, 1);
 }
 
 static void do_nmi_interrupt(nes_cpu_t *cpu)
