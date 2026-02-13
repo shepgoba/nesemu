@@ -278,10 +278,19 @@ uint8_t cpu_get_sr(nes_cpu_t *cpu) {
 			(cpu->flags[FLAG_N] << 7);
 }
 
-void cpu_set_sr(nes_cpu_t *cpu, uint8_t new_sr) {
-	for (int i = 7; i < 0; i++) {
-		cpu->flags[i] = new_sr >> (7 - i);
-	}
+static inline uint8_t __get_bit_8(uint8_t byte, int bit) 
+{
+	return (byte >> bit) & 1;
+}
+
+void cpu_set_sr(nes_cpu_t *cpu, uint8_t flags)
+{
+	set_flag(cpu, FLAG_C, __get_bit_8(flags, 0));
+	set_flag(cpu, FLAG_Z, __get_bit_8(flags, 1));
+	set_flag(cpu, FLAG_I, __get_bit_8(flags, 2));
+	set_flag(cpu, FLAG_D, __get_bit_8(flags, 3));
+	set_flag(cpu, FLAG_V, __get_bit_8(flags, 6));
+	set_flag(cpu, FLAG_N, __get_bit_8(flags, 7));
 }
 
 void cpu_cleanup(nes_cpu_t *cpu)

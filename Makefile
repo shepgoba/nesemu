@@ -6,11 +6,11 @@ OBJ_DIR := obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-CXXFLAGS += -O3 -flto -Wall -Wextra -Wpedantic -Wno-unused -Wno-unused-parameter -std=c23
-LDFLAGS += -lSDL3 -flto
+CXXFLAGS += -Og -Wall -Wextra -Wpedantic -Wno-unused -Wno-unused-parameter -std=c23
+LDFLAGS += -lSDL3
 
 
-ROM_FILE = roms/mario.nes
+ROM_FILE = roms/cputest.nes
 
 nesemu: $(OBJ_FILES)
 	$(CC) -o $@ $^ $(LDFLAGS)

@@ -1251,8 +1251,8 @@ void instr_PLA(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_PLP(nes_cpu_t *cpu, uint32_t instr)
 {
-	uint8_t new_sr = (oper_pop_8(cpu) & 0b11101111) | 0b00100000;
-	cpu_set_sr(cpu, new_sr);
+	uint8_t dat = oper_pop_8(cpu);
+	cpu_set_sr(cpu, dat);
 }
 
 void instr_ROL_A(nes_cpu_t *cpu, uint32_t instr)
@@ -1407,7 +1407,7 @@ void instr_ROR_zpg_x(nes_cpu_t *cpu, uint32_t instr)
 
 void instr_RTI(nes_cpu_t *cpu, uint32_t instr)
 {
-	uint8_t new_sr = (oper_pop_8(cpu) & 0b11101111) | 0b00100000;
+	uint8_t new_sr = oper_pop_8(cpu);
 	cpu_set_sr(cpu, new_sr);
 
 	cpu->pc = oper_pop_16(cpu);
