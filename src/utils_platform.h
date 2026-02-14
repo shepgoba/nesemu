@@ -1,6 +1,6 @@
 #ifndef UTILS_PLATFORM_INCLUDE
 #define UTILS_PLATFORM_INCLUDE
-
+#include <time.h>
 typedef struct {
 	time_t time;
 	uint64_t nanoseconds;

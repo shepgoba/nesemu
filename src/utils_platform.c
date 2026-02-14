@@ -19,8 +19,7 @@ static precise_time_t get_precise_time_win32(void)
 
 	return pt;
 }
-#elif defined __unix__
-#include <time.h>
+#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
 static precise_time_t get_precise_time_posix(void)
 {
 	struct timespec ts;
@@ -39,7 +38,7 @@ precise_time_t get_precise_time()
 {
 #ifdef WIN32
 	return get_precise_time_win32();
-#elif defined __unix
+#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
 	return get_precise_time_posix();
 #else
 	#error Unknown platform for get_precise_time
