@@ -3,8 +3,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#define DEBUG
-
 void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *apu)
 {
 	cpu->mem = memory;
