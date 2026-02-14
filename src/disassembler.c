@@ -177,7 +177,7 @@ bool disasm_instr(uint32_t instr, char *buf, size_t buf_len, uint16_t pc)
 	}
 
 	if (unknown) {
-		snprintf(buf, buf_len, "<illegal instruction>");
+		snprintf(buf, buf_len, "<illegal instruction (%08x)>", instr);
 	}
 
 	return true;

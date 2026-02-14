@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#define DEBUG
+
 void cpu_init(nes_cpu_t *cpu, nes_memory_t *memory, nes_ppu_t *ppu, nes_apu_t *apu)
 {
 	cpu->mem = memory;
@@ -105,7 +107,7 @@ static void (*const opcode_table[256])(nes_cpu_t *, uint32_t) = {
 	iinstr_NOP_imm, 	instr_STA_x_ind, 		iinstr_NOP_imm,		iinstr_SAX_x_ind, 		instr_STY_zpg, 			instr_STA_zpg,  		instr_STX_zpg, 		iinstr_SAX_zpg, 			instr_DEY, 		iinstr_NOP_imm, 			instr_TXA, 		iinstr_XAA_imm, 	instr_STY_abs, 			instr_STA_abs, 			instr_STX_abs, 		iinstr_SAX_abs,
 	instr_BCC, 			instr_STA_ind_y, 		iinstr_KILL, 		iinstr_AHX_ind_y, 		instr_STY_zpg_x, 		instr_STA_zpg_x,  		instr_STX_zpg_y, 	iinstr_SAX_zpg_y, 			instr_TYA, 		instr_STA_abs_y, 			instr_TXS, 		iinstr_TAS_abs_y, 	iinstr_SHY_abs_x, 		instr_STA_abs_x, 		iinstr_SHX_abs_y, 	iinstr_AHX_abs_y,
 
-	instr_LDY_imm, 		instr_LDA_x_ind, 		instr_LDX_imm, 		iinstr_LAX_x_ind, 		instr_LDY_zpg,			instr_LDA_zpg,  		instr_LDX_zpg, 		iinstr_LAX_zpg, 			instr_TAY, 		instr_LDA_imm, 				instr_TAX, 		iinstr_LAX_imm, 	instr_LDY_abs, 			instr_LDA_abs, 			instr_LDX_abs, 		iinstr_LAX_abs,
+	instr_LDY_imm, 		instr_LDA_x_ind, 		instr_LDX_imm, 		iinstr_LAX_x_ind, 		instr_LDY_zpg,			instr_LDA_zpg,  		instr_LDX_zpg, 		iinstr_LAX_zpg, 			instr_TAY, 		instr_LDA_imm, 				instr_TAX, 		iinstr_LXA, 	instr_LDY_abs, 			instr_LDA_abs, 			instr_LDX_abs, 		iinstr_LAX_abs,
 	instr_BCS, 			instr_LDA_ind_y, 		iinstr_KILL, 		iinstr_LAX_ind_y, 		instr_LDY_zpg_x,   		instr_LDA_zpg_x,  		instr_LDX_zpg_y, 	iinstr_LAX_zpg_y, 			instr_CLV, 		instr_LDA_abs_y, 			instr_TSX, 		iinstr_LAS_abs_y, 	instr_LDY_abs_x, 		instr_LDA_abs_x,		instr_LDX_abs_y, 	iinstr_LAX_abs_y,
 
 	instr_CPY_imm, 		instr_CMP_x_ind, 		iinstr_NOP_imm, 	iinstr_DCP_x_ind, 		instr_CPY_zpg,  		instr_CMP_zpg,  		instr_DEC_zpg, 		iinstr_DCP_zpg, 			instr_INY, 		instr_CMP_imm, 				instr_DEX, 		iinstr_AXS_imm, 	instr_CPY_abs, 			instr_CMP_abs, 			instr_DEC_abs, 		iinstr_DCP_abs,
@@ -155,10 +157,10 @@ static const uint8_t size_table[256] = {
 /* 50*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
 /* 60*/	1, 2, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
 /* 70*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
-/* 80*/	2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 3, 3, 3, 3,
-/* 90*/	2, 2, 0, 0, 2, 2, 2, 2, 1, 3, 1, 0, 3, 3, 3, 3,
-/* A0*/	2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 3, 3, 3, 3,
-/* B0*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 0, 3, 3, 3, 3,
+/* 80*/	2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
+/* 90*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
+/* A0*/	2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
+/* B0*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
 /* C0*/	2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,
 /* D0*/	2, 2, 0, 2, 2, 2, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3,
 /* E0*/ 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 3, 3, 3, 3,

@@ -1816,8 +1816,9 @@ void iinstr_LAX_abs_y(nes_cpu_t *cpu, uint32_t instr)
 	cpu->x = cpu->a;
 }
 
-void iinstr_LAX_imm(nes_cpu_t *cpu, uint32_t instr)
+void iinstr_LXA(nes_cpu_t *cpu, uint32_t instr)
 {
+	// unstable
 	instr_LDA_imm(cpu, instr);
 	cpu->x = cpu->a;
 }

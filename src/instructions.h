@@ -190,7 +190,7 @@ void iinstr_KILL(nes_cpu_t *, uint32_t);
 void iinstr_LAS_abs_y(nes_cpu_t *, uint32_t);
 void iinstr_LAX_abs(nes_cpu_t *, uint32_t);
 void iinstr_LAX_abs_y(nes_cpu_t *, uint32_t);
-void iinstr_LAX_imm(nes_cpu_t *, uint32_t);
+void iinstr_LXA(nes_cpu_t *, uint32_t);
 void iinstr_LAX_ind_y(nes_cpu_t *, uint32_t);
 void iinstr_LAX_x_ind(nes_cpu_t *, uint32_t);
 void iinstr_LAX_zpg(nes_cpu_t *, uint32_t);

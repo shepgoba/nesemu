@@ -1,5 +1,5 @@
 CC = gcc
-BINARY_NAME = nesmu
+BINARY_NAME = nesemu
 
 SRC_DIR := src
 OBJ_DIR := obj
