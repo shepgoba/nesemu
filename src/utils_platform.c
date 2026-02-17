@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "utils_platform.h"
 
-#ifdef _WIN32
+#ifdef NESEMU_WINDOWS
 #include <Windows.h>
 static precise_time_t get_precise_time_win32(void)
 {
@@ -19,7 +19,7 @@ static precise_time_t get_precise_time_win32(void)
 
 	return pt;
 }
-#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif defined NESEMU_POSIX
 static precise_time_t get_precise_time_posix(void)
 {
 	struct timespec ts;
@@ -36,9 +36,9 @@ static precise_time_t get_precise_time_posix(void)
 
 precise_time_t get_precise_time()
 {
-#ifdef WIN32
+#ifdef NESEMU_WINDOWS
 	return get_precise_time_win32();
-#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif defined NESEMU_MACOS || defined NESEMU_LINUX
 	return get_precise_time_posix();
 #else
 	#error Unknown platform for get_precise_time
