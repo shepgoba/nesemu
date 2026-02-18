@@ -19,7 +19,7 @@ static precise_time_t get_precise_time_win32(void)
 
 	return pt;
 }
-#elif defined NESEMU_POSIX
+#elif defined NESEMU_MACOS || defined NESEMU_LINUX
 static precise_time_t get_precise_time_posix(void)
 {
 	struct timespec ts;

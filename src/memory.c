@@ -261,7 +261,7 @@ NOINLINE
 void mem_write_16(nes_cpu_t *cpu, uint16_t address, uint16_t value)
 {
 	mem_write_8(cpu, address, value & 0xff);
-   	mem_write_8(cpu, address + 1, (value & 0xff00) >> 8);
+	mem_write_8(cpu, address + 1, (value & 0xff00) >> 8);
 }
 
 NOINLINE
