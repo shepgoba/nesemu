@@ -239,7 +239,7 @@ void mem_write_8(nes_cpu_t *cpu, uint16_t address, uint8_t value)
 				break;
 			}
 			case APU_FRAME_COUNTER: {
-				log_event("writing to apu frame counter=%i", value);
+				//log_event("writing to apu frame counter=%i", value);
 				break;
 			}
 			case CONTROLLER_IO_ADDR: {

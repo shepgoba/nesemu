@@ -3,19 +3,20 @@
 
 #ifdef NESEMU_WINDOWS
 #include <Windows.h>
+#include <stdint.h>
+
 static precise_time_t get_precise_time_win32(void)
 {
 	FILETIME ft;
-	GetSystemTimeAsFileTime(&ft);
+	GetSystemTimePreciseAsFileTime(&ft);
 
-	uint64_t total_us = (((uint64_t)ft.dwHighDateTime << 32) | (uint64_t)ft.dwLowDateTime) / 10;
-	const uint64_t EPOCH_DIFF_US = 11644473600ULL * 1000000ULL;
-
-	total_us -= EPOCH_DIFF_US;
+	uint64_t ticks = ((uint64_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+	const uint64_t EPOCH_DIFF_TICKS = 116444736000000000ULL;
+	ticks -= EPOCH_DIFF_TICKS;
 
 	precise_time_t pt;
-	pt.time = (time_t)(total_us / 1000000ULL);
-	pt.nanoseconds = (total_us % 1000000ULL) * 1000;
+	pt.time = (time_t)(ticks / 10000000ULL);
+	pt.nanoseconds = (long)((ticks % 10000000ULL) * 100);
 
 	return pt;
 }

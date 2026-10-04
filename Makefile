@@ -7,7 +7,7 @@ OBJ_DIR := obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-CFLAGS += -Og -Wall -Wextra -Wpedantic -Wno-unused -Wno-unused-parameter -std=c23
+CFLAGS += -O3 -flto -Wall -Wextra -Wpedantic -Wno-unused -Wno-unused-parameter -std=c23
 LDFLAGS += -lSDL3
 
 UNAME_S := $(shell uname -s 2>/dev/null)
